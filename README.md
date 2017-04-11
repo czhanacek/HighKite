@@ -1,4 +1,5 @@
 # HighKite
 122 Final Programming Assignment
 Peter Brennan
-Stacia Lesser 
+Stacia Lesser
+Charlie Hanacek

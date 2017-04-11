@@ -7,6 +7,11 @@
 *.o
 *.obj
 
+# Ignore project files so that everyone can have unique paths to include their
+# SFML Libraries
+*.vcxproj
+*.cbp
+
 # Precompiled Headers
 *.gch
 *.pch

@@ -8,10 +8,10 @@ GameWrapper::GameWrapper()
 
     sortSpritesByPriority();
 
-    while (window->isOpen())
+    while (window.isOpen())
 	{
 		sf::Event event;
-		while (window->pollEvent(event))
+		while (window.pollEvent(event))
 		{
             // Stuff in here will only execute when there's an event in SFML's event loop
             // Thus, anything not related to an event should go outside of this while loop
@@ -22,18 +22,18 @@ GameWrapper::GameWrapper()
             // In the future I'd like to have an application-specific event queue as well so that we can
             // create and handle our own events or abstract SFML events and then handle those.
             if (event.type == sf::Event::Closed)
-                window->close();
+                window.close();
         }
-        window->clear();
+        window.clear();
 
 
         for(int i = 0; i < onscreen.size(); i++) {
-            window->draw(onscreen[i]);
+            window.draw(onscreen[i]);
             std::cout << "Priority = " << onscreen[i].getPriority() << std::endl;
         }
 
 
-        window->display();
+        window.display();
     }
 }
 

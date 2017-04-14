@@ -2,7 +2,7 @@
 
 GameWrapper::GameWrapper()
 {
-    sf::Clock clk();
+    sf::Clock clk = sf::Clock();
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     window->setFramerateLimit(25);
     makeMainMenuBackground();

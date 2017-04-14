@@ -14,6 +14,8 @@
 *.vcxproj.filters
 *.sln
 
+.gitattributes
+
 
 # Precompiled Headers
 *.gch

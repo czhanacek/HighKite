@@ -1,5 +1,5 @@
 
-#include "DrawableWithPriority.h"
+#include "Background.h"
 
 #ifndef GAMEWRAPPER_H
 #define GAMEWRAPPER_H
@@ -15,10 +15,11 @@ class GameWrapper
         void runApp(void);
         void sortSpritesByPriority(void);
         void makeMainMenuBackground(void);
+
     protected:
     private:
         std::vector<DrawableWithPriority> onscreen;
-
+        sf::RenderWindow * window;
 
 };
 

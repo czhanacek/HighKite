@@ -11,6 +11,9 @@
 # SFML Libraries
 *.vcxproj
 *.cbp
+*.vcxproj.filters
+*.sln
+
 
 # Precompiled Headers
 *.gch

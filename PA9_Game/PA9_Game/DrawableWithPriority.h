@@ -12,6 +12,7 @@ class DrawableWithPriority : public sf::Sprite {
         DrawableWithPriority(std::string filename, int x, int y, int newPriority);
         DrawableWithPriority(std::string filename, int x, int y, int iPosX, int iPosY, int newPriority);
         virtual void update(sf::Time t);
+        virtual void react(sf::Event e);
         ~DrawableWithPriority();
         void setPriority(int newPriority);
         int getPriority(void) const;

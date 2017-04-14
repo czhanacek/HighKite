@@ -11,14 +11,19 @@ class GameWrapper
         GameWrapper();
         ~GameWrapper();
         DrawableWithPriority getNext(void);
-        void registerSprite(DrawableWithPriority newSprite);
+        void registerAnimatableSprite(DrawableWithPriority * newSprite);
+        void registerReactableSprite(DrawableWithPriority * newSprite);
         void runApp(void);
-        void sortSpritesByPriority(void);
+        void sortAnimatorsByPriority(void);
         void makeMainMenuBackground(void);
 
     protected:
     private:
-        std::vector<DrawableWithPriority> onscreen;
+        std::vector<DrawableWithPriority *> animates; // vector of sprites that update their animation at least once
+        std::vector<DrawableWithPriority *> reacts; // vector of sprites that react to events at least once
+        // Since both of these vectors store pointers, one sprite can be in both animates and reacts
+
+
         sf::RenderWindow * window;
 
 };

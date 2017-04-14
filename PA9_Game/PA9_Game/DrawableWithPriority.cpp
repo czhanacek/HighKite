@@ -6,7 +6,9 @@ DrawableWithPriority::DrawableWithPriority(int newPriority) : sf::Sprite() {
 }
 
 DrawableWithPriority::~DrawableWithPriority() {
-
+    for(int i = 0; i < spriteTextures.size(); i++) {
+        delete spriteTextures[i];
+    }
 }
 
  void DrawableWithPriority::setPriority(int newPriority) {
@@ -42,6 +44,19 @@ DrawableWithPriority::DrawableWithPriority(std::string filename, int x, int y, i
 
 void DrawableWithPriority::update(sf::Time t) {
     // nothing here
+}
+
+void DrawableWithPriority::react(sf::Event e) {
+
+    // Some example code to demonstrate the functionality of this function ;)
+//    if(e.type == sf::Event::KeyPressed) {
+//        if(e.key.code == sf::Keyboard::L) {
+//            setPosition(getPosition().x + 10, getPosition().y);
+//
+//        }
+//    }
+
+
 }
 
 

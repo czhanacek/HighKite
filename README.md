@@ -22,6 +22,7 @@ git commit -m "<<Your informative commit message>>"
 
 git checkout master 
 
+
 git rebase <<your unique branch from above>> // when you run this, you should see a message about fast-forwarding master. This command keeps your local master branch up to date with your most recent code.
 
 git checkout <<your unique branch from above>>

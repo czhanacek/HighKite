@@ -1,21 +1,21 @@
+#pragma once
 
 #include "Background.h"
 
-#ifndef GAMEWRAPPER_H
-#define GAMEWRAPPER_H
-
-
+#include "Button.h"
 class GameWrapper
 {
     public:
         GameWrapper();
         ~GameWrapper();
-        DrawableWithPriority getNext(void);
+        //DrawableWithPriority getNext(void);
         void registerAnimatableSprite(DrawableWithPriority * newSprite);
         void registerReactableSprite(DrawableWithPriority * newSprite);
         void runApp(void);
         void sortAnimatorsByPriority(void);
+
         void makeMainMenuBackground(void);
+        void checkForClicks(void);
 
     protected:
     private:
@@ -28,4 +28,3 @@ class GameWrapper
 
 };
 
-#endif // GAMEWRAPPER_H

@@ -24,6 +24,14 @@ GameWrapper::GameWrapper()
             // create and handle our own events or abstract SFML events and then handle those.
             if (event.type == sf::Event::Closed)
                 window->close();
+            if(event.type == sf::Event::MouseButtonPressed) {
+                checkForClicks();
+            }
+            if(event.type == sf::Event::MouseButtonReleased) {
+                for(int i = 0; i < reacts.size(); i++) {
+                    reacts[i]->unclick();
+                }
+            }
             for(int i = 0; i < reacts.size(); i++) {
                 reacts[i]->react(event);
             }
@@ -71,17 +79,36 @@ void GameWrapper::sortAnimatorsByPriority(void)
 
 }
 
+// Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
+// "do you even know geometry? trigonometry?"
+// https://en.sfml-dev.org/forums/index.php?topic=5662.0
+
+void GameWrapper::checkForClicks(void)
+{
+
+    sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+    for(int i = 0; i < reacts.size(); i++) {
+        std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
+        std::cout << reacts[i]->getScale().x;
+        if(mouse.x >= reacts[i]->getPosition().x && mouse.x <= reacts[i]->getPosition().x + (reacts[i]->getSizeX())
+                && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().x + (reacts[i]->getSizeY())) {
+            std::cout << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
+
+            reacts[i]->click();
+        }
+    }
+}
+
 
 void GameWrapper::makeMainMenuBackground(void) {
     DrawableWithPriority * mmBackground = new DrawableWithPriority("imgs/grassyfield.jpg", window->getSize().x,
         window->getSize().y, 0);
     //DrawableWithPriority apple = DrawableWithPriority("imgs/apple.gif", 100, 100, 2);
-    DrawableWithPriority * boy = new DrawableWithPriority("imgs/boy.jpg", 100, 150, 1);
-    boy->setRotation(100);
-    boy->setPosition(500, 500);
+    Button * instructions = new Button("imgs/button.jpg", "imgs/button-pressed.jpg", 500, 500);
+    //boy->setRotation(100);
     sortAnimatorsByPriority();
     registerAnimatableSprite(mmBackground);
-    registerAnimatableSprite(boy);
-    registerReactableSprite(boy);
+    registerAnimatableSprite(instructions);
+    registerReactableSprite(instructions);
 
 }

@@ -2,8 +2,9 @@
 #include "DrawableWithPriority.h"
 
 
-DrawableWithPriority::DrawableWithPriority(int newPriority) : sf::Sprite() {
+DrawableWithPriority::DrawableWithPriority(std::string newName, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+    name = newName;
 }
 
 DrawableWithPriority::~DrawableWithPriority() {
@@ -21,7 +22,7 @@ DrawableWithPriority::~DrawableWithPriority() {
 
  }
 
-void DrawableWithPriority::click(void ) {
+Message DrawableWithPriority::click(void ) {
     std::cout << "I got clicked!\n";
     std::cout << "My size is (" << getSizeX() << ", " << getSizeY() << ")\n";
     int location = spriteTextures.size();
@@ -32,6 +33,7 @@ void DrawableWithPriority::click(void ) {
         setScale((double)getSizeX() / spriteTextures[location]->getSize().x, (double)getSizeY() / spriteTextures[location]->getSize().y);
     }
     setTexture(*(spriteTextures[location]));
+    return Message();
 
 }
 
@@ -55,7 +57,8 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 }
 
-DrawableWithPriority::DrawableWithPriority(std::string filename, int x, int y, int newPriority) {
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int x, int y, int newPriority) {
+    name = newName;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     if(loaded) {
@@ -71,7 +74,7 @@ void DrawableWithPriority::update(sf::Time t) {
     // nothing here
 }
 
-void DrawableWithPriority::react(sf::Event e) {
+Message DrawableWithPriority::react(sf::Event e) {
 
     // Some example code to demonstrate the functionality of this function ;)
 //    if(e.type == sf::Event::KeyPressed) {
@@ -80,7 +83,7 @@ void DrawableWithPriority::react(sf::Event e) {
 //
 //        }
 //    }
-
+    return Message();
 
 }
 
@@ -99,9 +102,11 @@ int DrawableWithPriority::addNewTexture(std::string filename) {
     }
 }
 
-
-
-DrawableWithPriority::DrawableWithPriority(std::string filename, int newPriority) {
+std::string DrawableWithPriority::getName(void) {
+    return name;
+}
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int newPriority) {
+    name = newName;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     int location = spriteTextures.size();
@@ -110,13 +115,19 @@ DrawableWithPriority::DrawableWithPriority(std::string filename, int newPriority
     priority = newPriority;
 }
 
- void DrawableWithPriority::unclick()
+ Message DrawableWithPriority::unclick()
  {
-
+    Message();
  }
 
+void DrawableWithPriority::receiveMessage(Message msg)
+{
 
-DrawableWithPriority::DrawableWithPriority(std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
+}
+
+
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
+    name = newName;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     if(loaded) {

@@ -1,9 +1,10 @@
 #pragma once
 #include "DrawableWithPriority.h"
-class Background
+class Background : public DrawableWithPriority
 {
 public:
-	Background();
+	Background(std::string newName, std::string filename, int x, int y);
 	~Background();
+	void slideUpFirstTime(std::string newBackgroundFile);
 };
 

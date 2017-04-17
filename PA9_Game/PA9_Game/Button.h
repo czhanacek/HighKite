@@ -10,9 +10,10 @@
 class Button : public DrawableWithPriority
 {
     public:
-        Button(std::string unclickedFilename, std::string clickedFilename="", int xpos=0, int ypos=0);
-        void click(void);
-        void unclick(void);
+        Button(std::string newName, std::string unclickedFilename, std::string clickedFilename="", int xpos=0, int ypos=0);
+        Message click(void);
+        Message unclick(void);
+        void receiveMessage(Message msg);
         virtual ~Button();
     protected:
     private:

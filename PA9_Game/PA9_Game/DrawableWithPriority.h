@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Message.h"
 #include <algorithm>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -10,15 +10,16 @@
 
 class DrawableWithPriority : public sf::Sprite {
     public:
-        DrawableWithPriority(int newPriority);
-        DrawableWithPriority(std::string filename, int x, int y, int newPriority);
-        DrawableWithPriority(std::string filename, int newPriority);
-        DrawableWithPriority(std::string filename, int x, int y, int iPosX, int iPosY, int newPriority);
+        DrawableWithPriority(std::string newName, int newPriority);
+        DrawableWithPriority(std::string newName, std::string filename, int x, int y, int newPriority);
+        DrawableWithPriority(std::string newName, std::string filename, int newPriority);
+        DrawableWithPriority(std::string newName, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority);
         virtual void update(sf::Time t);
-        virtual void react(sf::Event e);
-        virtual void click();
-        virtual void unclick();
-
+        virtual Message react(sf::Event e);
+        virtual void receiveMessage(Message msg);
+        virtual Message click();
+        virtual Message unclick();
+        std::string getName();
         unsigned int getSizeX(void);
         unsigned int getSizeY(void);
         ~DrawableWithPriority();
@@ -28,6 +29,7 @@ class DrawableWithPriority : public sf::Sprite {
         int addNewTexture(std::string filename);
     private:
         int priority;
+        std::string name;
 
 };
 

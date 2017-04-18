@@ -117,7 +117,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string file
 
  Message DrawableWithPriority::unclick()
  {
-    Message();
+    return Message();
  }
 
 void DrawableWithPriority::receiveMessage(Message msg)

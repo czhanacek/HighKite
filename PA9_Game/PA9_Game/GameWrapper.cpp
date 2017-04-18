@@ -7,7 +7,6 @@ GameWrapper::GameWrapper()
     window->setFramerateLimit(25);
     makeMainMenuBackground();
 
-    sortAnimatorsByPriority();
 
     while (window->isOpen())
 	{
@@ -41,6 +40,7 @@ GameWrapper::GameWrapper()
 
         }
         window->clear();
+		sortAnimatorsByPriority();
 
 
         for(int i = 0; i < animates.size(); i++) {
@@ -84,7 +84,24 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
 // Therefore, sprites with a lower number will be rendered first.
 void GameWrapper::sortAnimatorsByPriority(void)
 {
-    std::sort(animates.begin(), animates.end());
+	int size = animates.size();
+	DrawableWithPriority * temp;
+
+	// Bubble sort
+	while (size)
+	{
+		for (int i = 0; i < size - 1; ++i)
+		{
+			if (animates[i]->getPriority() > animates[i + 1]->getPriority())
+			{
+				// The implementation of this if statement swaps the current object at current index with the next object in the vector
+				temp = animates[i];
+				animates[i] = animates[i + 1];
+				animates[i + 1] = temp;
+			}
+		}
+		size--;
+	}
 
 }
 
@@ -133,10 +150,12 @@ void GameWrapper::makeMainMenuBackground(void) {
         window->getSize().y);
     //DrawableWithPriority apple = DrawableWithPriority("imgs/apple.gif", 100, 100, 2);
     Button * instructions = new Button("showInstructions", "imgs/button.jpg", "imgs/button-pressed.jpg", 500, 500);
+	Button * instructions2 = new Button("dork", "imgs/button.jpg", "imgs/button-pressed.jpg", 100, 100);
     //boy->setRotation(100);
     sortAnimatorsByPriority();
     registerAnimatableSprite(mmBackground);
     registerAnimatableSprite(instructions);
+	registerAnimatableSprite(instructions2);
     registerReactableSprite(instructions);
 
 }

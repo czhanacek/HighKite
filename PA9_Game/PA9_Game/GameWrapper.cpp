@@ -11,7 +11,7 @@ GameWrapper::GameWrapper()
     while (window->isOpen())
 	{
 		sf::Event event;
-		while (window->pollEvent(event) || !messageQueue.empty())
+		while (window->pollEvent(event))
 		{
             // Stuff in here will only execute when there's an event in SFML's event loop
             // Thus, anything not related to an event should go outside of this while loop
@@ -22,8 +22,8 @@ GameWrapper::GameWrapper()
             // In the future I'd like to have an application-specific event queue as well so that we can
             // create and handle our own events or abstract SFML events and then handle those.
 
-            messageBlaster();
 
+            messageBlaster(); // Sends events to all the reactables
             if (event.type == sf::Event::Closed)
                 window->close();
             if(event.type == sf::Event::MouseButtonPressed) {
@@ -40,6 +40,8 @@ GameWrapper::GameWrapper()
 
         }
         window->clear();
+
+
 		sortAnimatorsByPriority();
 
 

@@ -74,8 +74,11 @@ GameWrapper::~GameWrapper()
 }
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
-    if(msg.getSender() == "showInstructions" && msg.getContent() == "clicked") {
-        exit(0);
+	if (msg.getSender() == "showInstructions" && msg.getContent() == "clicked") {
+	
+		// Switch to different if statement once the Play Game button is created.
+		animates.clear();
+		startGame();
     }
 }
 
@@ -146,16 +149,32 @@ void GameWrapper::addMessageToQueue(Message msg)
 
 
 void GameWrapper::makeMainMenuBackground(void) {
-    DrawableWithPriority * mmBackground = new Background("Background", "imgs/grassyfield.jpg", window->getSize().x,
-        window->getSize().y);
+
+	DrawableWithPriority * mmBackground = new Background("Background", "imgs/clouds.png", window->getSize().x,
+		window->getSize().y, 0, 0, 0);
+	DrawableWithPriority * mmGrass = new Background("GrassBackground", "imgs/grass2.png", window->getSize().x,
+		window->getSize().y, 0, 0, 1);
     //DrawableWithPriority apple = DrawableWithPriority("imgs/apple.gif", 100, 100, 2);
     Button * instructions = new Button("showInstructions", "imgs/button.jpg", "imgs/button-pressed.jpg", 500, 500);
-	Button * instructions2 = new Button("dork", "imgs/button.jpg", "imgs/button-pressed.jpg", 100, 100);
     //boy->setRotation(100);
     sortAnimatorsByPriority();
-    registerAnimatableSprite(mmBackground);
+	registerAnimatableSprite(mmBackground);
+	registerAnimatableSprite(mmGrass);
     registerAnimatableSprite(instructions);
-	registerAnimatableSprite(instructions2);
     registerReactableSprite(instructions);
+
+}
+
+void GameWrapper::startGame(void) {
+
+	DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "imgs/clouds.png", window->getSize().x,
+		window->getSize().y, 0, 0, 2);
+	DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "imgs/clouds.png", window->getSize().x,
+		window->getSize().y, 0, -720, 2);
+	DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "imgs/grass2.png", window->getSize().x,
+		window->getSize().y, 0, 0, 3);
+	registerAnimatableSprite(cloud1Background);
+	registerAnimatableSprite(cloud2Background);
+	registerAnimatableSprite(moveGrass);
 
 }

@@ -23,25 +23,23 @@ GameWrapper::GameWrapper()
             // create and handle our own events or abstract SFML events and then handle those.
 
 
-            messageBlaster(); // Sends events to all the reactables
+
             if (event.type == sf::Event::Closed)
                 window->close();
             if(event.type == sf::Event::MouseButtonPressed) {
                 checkForClicks();
             }
             if(event.type == sf::Event::MouseButtonReleased) {
-                for(int i = 0; i < reacts.size(); i++) {
-                    addMessageToQueue(reacts[i]->unclick());
-                }
+                checkForUnclicks();
             }
             for(int i = 0; i < reacts.size(); i++) {
                 addMessageToQueue(reacts[i]->react(event));
             }
 
         }
+
+
         window->clear();
-
-
 		sortAnimatorsByPriority();
 
 
@@ -55,6 +53,7 @@ GameWrapper::GameWrapper()
 
 
         window->display();
+        messageBlaster(); // Sends events to all the reactables
     }
 }
 
@@ -76,10 +75,10 @@ GameWrapper::~GameWrapper()
 }
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
-	if (msg.getSender() == "showInstructions" && msg.getContent() == "clicked") {
-	
+	if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
+
 		// Switch to different if statement once the Play Game button is created.
-		animates.clear();
+		removeSpritesBelongingToContext("mainmenu");
 		startGame();
     }
 }
@@ -110,22 +109,60 @@ void GameWrapper::sortAnimatorsByPriority(void)
 
 }
 
+
+void GameWrapper::removeSpritesBelongingToContext(std::string theContext)
+{
+
+     for(int i = 0; i < animates.size(); i++) {
+        if(animates[i]->getContext() == theContext) {
+            std::cout << "Erased " << animates[i]->getName() << "from animates\n";
+            animates.erase(animates.begin() + i);
+            i = 0;
+        }
+    }
+    for(int x = 0; x < reacts.size(); x++) {
+        if(reacts[x]->getContext() == theContext) {
+            std::cout << "Erased " << reacts[x]->getName() << "from reacts\n";
+            reacts.erase(reacts.begin() + x);
+            x = 0;
+        }
+    }
+}
+
+
+
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
 
 void GameWrapper::checkForClicks(void)
 {
-
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
-        std::cout << reacts[i]->getScale().x;
+
         if(mouse.x >= reacts[i]->getPosition().x && mouse.x <= reacts[i]->getPosition().x + (reacts[i]->getSizeX())
-                && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().x + (reacts[i]->getSizeY())) {
-            std::cout << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
+                && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
+            std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
+             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
 
             addMessageToQueue(reacts[i]->click());
+        }
+    }
+}
+
+void GameWrapper::checkForUnclicks(void)
+{
+    sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+    for(int i = 0; i < reacts.size(); i++) {
+        std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
+
+        if(mouse.x >= reacts[i]->getPosition().x && mouse.x <= reacts[i]->getPosition().x + (reacts[i]->getSizeX())
+                && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
+            std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
+             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
+
+            addMessageToQueue(reacts[i]->unclick());
         }
     }
 }
@@ -152,28 +189,28 @@ void GameWrapper::addMessageToQueue(Message msg)
 
 void GameWrapper::makeMainMenuBackground(void) {
 
-	DrawableWithPriority * mmBackground = new Background("Background", "imgs/clouds.png", window->getSize().x,
+	DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
 		window->getSize().y, 0, 0, 0);
-	DrawableWithPriority * mmGrass = new Background("GrassBackground", "imgs/grass2.png", window->getSize().x,
+	DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
 		window->getSize().y, 0, 0, 1);
-    //DrawableWithPriority apple = DrawableWithPriority("imgs/apple.gif", 100, 100, 2);
-    Button * instructions = new Button("showInstructions", "imgs/button.jpg", "imgs/button-pressed.jpg", 500, 500);
-    //boy->setRotation(100);
+    Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 575);
+    Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 500, 450);
     sortAnimatorsByPriority();
 	registerAnimatableSprite(mmBackground);
 	registerAnimatableSprite(mmGrass);
     registerAnimatableSprite(instructions);
     registerReactableSprite(instructions);
-
+    registerAnimatableSprite(play);
+    registerReactableSprite(play);
 }
 
 void GameWrapper::startGame(void) {
 
-	DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "imgs/clouds.png", window->getSize().x,
+	DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
 		window->getSize().y, 0, 0, 2);
-	DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "imgs/clouds.png", window->getSize().x,
+	DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
 		window->getSize().y, 0, -720, 2);
-	DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "imgs/grass2.png", window->getSize().x,
+	DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
 		window->getSize().y, 0, 0, 3);
 	registerAnimatableSprite(cloud1Background);
 	registerAnimatableSprite(cloud2Background);

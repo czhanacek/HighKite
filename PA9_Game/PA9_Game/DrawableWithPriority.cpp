@@ -71,7 +71,8 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string file
 }
 
 void DrawableWithPriority::update(sf::Time t) {
-    // nothing here
+
+	//nothing here
 }
 
 Message DrawableWithPriority::react(sf::Event e) {
@@ -141,6 +142,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string file
     setPosition(iPosX, iPosY);
 
 }
+
 bool operator< (const DrawableWithPriority &d1, const DrawableWithPriority &d2) {
     if(d1.getPriority() < d2.getPriority()) {
         return true;

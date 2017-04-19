@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(std::string newName, std::string unclickedFilename, std::string clickedFilename, int xpos, int ypos) : DrawableWithPriority(newName, unclickedFilename, 0) {
+Button::Button(std::string newName, std::string unclickedFilename, std::string clickedFilename, int xpos, int ypos) : DrawableWithPriority(newName, unclickedFilename, 5) {
     setPosition(xpos, ypos);
 
     if(clickedFilename != "") {

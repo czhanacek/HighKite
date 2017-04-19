@@ -19,6 +19,7 @@ class GameWrapper
         void checkForClicks(void);
         void messageBlaster(void);
         void addMessageToQueue(Message msg);
+		void startGame(void);
 
     protected:
     private:

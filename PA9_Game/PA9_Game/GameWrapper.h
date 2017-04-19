@@ -11,12 +11,14 @@ class GameWrapper
         ~GameWrapper();
         //DrawableWithPriority getNext(void);
         void registerAnimatableSprite(DrawableWithPriority * newSprite);
+        void removeSpritesBelongingToContext(std::string theContext);
         void registerReactableSprite(DrawableWithPriority * newSprite);
         void runApp(void);
         void sortAnimatorsByPriority(void);
         void handleGameWrapperMessages(Message msg);
         void makeMainMenuBackground(void);
         void checkForClicks(void);
+        void checkForUnclicks(void);
         void messageBlaster(void);
         void addMessageToQueue(Message msg);
 		void startGame(void);

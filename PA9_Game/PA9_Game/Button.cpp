@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(std::string newName, std::string unclickedFilename, std::string clickedFilename, int xpos, int ypos) : DrawableWithPriority(newName, unclickedFilename, 5) {
+Button::Button(std::string newName, std::string newContext, std::string unclickedFilename, std::string clickedFilename, int xpos, int ypos) : DrawableWithPriority(newName, newContext, unclickedFilename, 5) {
     setPosition(xpos, ypos);
 
     if(clickedFilename != "") {
@@ -23,5 +23,5 @@ Message Button::click(void) {
 }
 Message Button::unclick(void) {
     setTexture(*(spriteTextures[0]));
-    return Message("instructionButton", "unclicked");
+    return Message(getName(), "unclicked");
 }

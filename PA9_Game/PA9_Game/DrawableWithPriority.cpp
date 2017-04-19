@@ -2,8 +2,9 @@
 #include "DrawableWithPriority.h"
 
 
-DrawableWithPriority::DrawableWithPriority(std::string newName, int newPriority) : sf::Sprite() {
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+    context = newContext;
     name = newName;
 }
 
@@ -57,8 +58,9 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 }
 
-DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int x, int y, int newPriority) {
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
+    context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     if(loaded) {
@@ -106,8 +108,9 @@ int DrawableWithPriority::addNewTexture(std::string filename) {
 std::string DrawableWithPriority::getName(void) {
     return name;
 }
-DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int newPriority) {
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
+    context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     int location = spriteTextures.size();
@@ -121,14 +124,21 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string file
     return Message();
  }
 
-void DrawableWithPriority::receiveMessage(Message msg)
+std::string DrawableWithPriority::getContext()
 {
-
+    return context;
 }
 
 
-DrawableWithPriority::DrawableWithPriority(std::string newName, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
+void DrawableWithPriority::receiveMessage(Message msg)
+{
+    // This should be overloaded by subclasses
+}
+
+
+DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
+    context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     if(loaded) {

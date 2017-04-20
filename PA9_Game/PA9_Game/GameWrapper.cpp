@@ -113,16 +113,16 @@ void GameWrapper::sortAnimatorsByPriority(void)
 void GameWrapper::removeSpritesBelongingToContext(std::string theContext)
 {
 
-     for(int i = 0; i < animates.size(); i++) {
+     for(int i = 0; i < animates.size();) {
         if(animates[i]->getContext() == theContext) {
-            std::cout << "Erased " << animates[i]->getName() << "from animates\n";
+            std::cout << "Erased " << animates[i]->getName() << " from animates\n";
             animates.erase(animates.begin() + i);
             i = 0;
         }
     }
-    for(int x = 0; x < reacts.size(); x++) {
+    for(int x = 0; x < reacts.size();) {
         if(reacts[x]->getContext() == theContext) {
-            std::cout << "Erased " << reacts[x]->getName() << "from reacts\n";
+            std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
             reacts.erase(reacts.begin() + x);
             x = 0;
         }

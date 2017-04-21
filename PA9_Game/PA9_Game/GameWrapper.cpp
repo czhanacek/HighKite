@@ -1,18 +1,16 @@
 #include "GameWrapper.h"
 
-GameWrapper::GameWrapper()
-{
-    sf::Clock clk = sf::Clock();
+GameWrapper::GameWrapper() {
+    srand(time(NULL));
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock();
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
-    window->setFramerateLimit(25);
+    //window->setFramerateLimit(100);
     makeMainMenuBackground();
 
 
-    while (window->isOpen())
-	{
-		sf::Event event;
-		while (window->pollEvent(event))
-		{
+    while (window->isOpen()) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
             // Stuff in here will only execute when there's an event in SFML's event loop
             // Thus, anything not related to an event should go outside of this while loop
             // (but still in the window.isOpen() while loop.
@@ -40,7 +38,7 @@ GameWrapper::GameWrapper()
 
 
         window->clear();
-		sortAnimatorsByPriority();
+        sortAnimatorsByPriority();
 
 
         for(int i = 0; i < animates.size(); i++) {
@@ -48,7 +46,7 @@ GameWrapper::GameWrapper()
         }
         // update textures here
         for(int i = 0; i < animates.size(); i++) {
-            animates[i]->update(clk.getElapsedTime());
+            animates[i]->update(elapsed.getElapsedTime(), clk1.restart());
         }
 
 
@@ -67,53 +65,48 @@ void GameWrapper::registerReactableSprite(DrawableWithPriority * newSprite) {
 }
 
 
-GameWrapper::~GameWrapper()
-{
+GameWrapper::~GameWrapper() {
     for(int i = 0; i < animates.size(); i++) {
         delete animates[i];
     }
 }
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
-	if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
+    if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
 
-		// Switch to different if statement once the Play Game button is created.
-		removeSpritesBelongingToContext("mainmenu");
-		startGame();
+        // Switch to different if statement once the Play Game button is created.
+        removeSpritesBelongingToContext("mainmenu");
+        currentContext = "game";
+        startGame();
     }
 }
 
 
 // Sprites at the end of the list will be rendered last
 // Therefore, sprites with a lower number will be rendered first.
-void GameWrapper::sortAnimatorsByPriority(void)
-{
-	int size = animates.size();
-	DrawableWithPriority * temp;
+void GameWrapper::sortAnimatorsByPriority(void) {
+    int size = animates.size();
+    DrawableWithPriority * temp;
 
-	// Bubble sort
-	while (size)
-	{
-		for (int i = 0; i < size - 1; ++i)
-		{
-			if (animates[i]->getPriority() > animates[i + 1]->getPriority())
-			{
-				// The implementation of this if statement swaps the current object at current index with the next object in the vector
-				temp = animates[i];
-				animates[i] = animates[i + 1];
-				animates[i + 1] = temp;
-			}
-		}
-		size--;
-	}
+    // Bubble sort
+    while (size) {
+        for (int i = 0; i < size - 1; ++i) {
+            if (animates[i]->getPriority() > animates[i + 1]->getPriority()) {
+                // The implementation of this if statement swaps the current object at current index with the next object in the vector
+                temp = animates[i];
+                animates[i] = animates[i + 1];
+                animates[i + 1] = temp;
+            }
+        }
+        size--;
+    }
 
 }
 
 
-void GameWrapper::removeSpritesBelongingToContext(std::string theContext)
-{
+void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
 
-     for(int i = 0; i < animates.size();) {
+    for(int i = 0; i < animates.size();) {
         if(animates[i]->getContext() == theContext) {
             std::cout << "Erased " << animates[i]->getName() << " from animates\n";
             animates.erase(animates.begin() + i);
@@ -135,8 +128,7 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext)
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
 
-void GameWrapper::checkForClicks(void)
-{
+void GameWrapper::checkForClicks(void) {
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
@@ -144,15 +136,14 @@ void GameWrapper::checkForClicks(void)
         if(mouse.x >= reacts[i]->getPosition().x && mouse.x <= reacts[i]->getPosition().x + (reacts[i]->getSizeX())
                 && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
-             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
+            std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
 
             addMessageToQueue(reacts[i]->click());
         }
     }
 }
 
-void GameWrapper::checkForUnclicks(void)
-{
+void GameWrapper::checkForUnclicks(void) {
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
@@ -160,7 +151,7 @@ void GameWrapper::checkForUnclicks(void)
         if(mouse.x >= reacts[i]->getPosition().x && mouse.x <= reacts[i]->getPosition().x + (reacts[i]->getSizeX())
                 && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
-             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
+            std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
 
             addMessageToQueue(reacts[i]->unclick());
         }
@@ -179,25 +170,40 @@ void GameWrapper::messageBlaster(void) {
     }
 }
 
-void GameWrapper::addMessageToQueue(Message msg)
-{
+void GameWrapper::addMessageToQueue(Message msg) {
     if(!msg.isEmpty()) {
         messageQueue.push(msg);
     }
 }
 
+std::string GameWrapper::getCurrentContext(void) {
+    return currentContext;
+}
+
+void GameWrapper::setCurrentContext(std::string newCurrentContext) {
+    currentContext = newCurrentContext;
+}
+
+
 
 void GameWrapper::makeMainMenuBackground(void) {
+    setCurrentContext("mainmenu");
+    DrawableWithPriority * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
 
-	DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
-		window->getSize().y, 0, 0, 0);
-	DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
-		window->getSize().y, 0, 0, 1);
+    DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
+            window->getSize().y, 0, 0, 0);
+    DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
+            window->getSize().y, 0, 0, 1);
     Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 575);
     Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 500, 450);
     sortAnimatorsByPriority();
-	registerAnimatableSprite(mmBackground);
-	registerAnimatableSprite(mmGrass);
+    registerAnimatableSprite(mmBackground);
+    for(int i = 0; i < 200; i++) {
+        registerAnimatableSprite(new Leaf(getCurrentContext()));
+    }
+    registerAnimatableSprite(mmGrass);
+    registerAnimatableSprite(boy);
+    registerReactableSprite(boy);
     registerAnimatableSprite(instructions);
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
@@ -205,15 +211,20 @@ void GameWrapper::makeMainMenuBackground(void) {
 }
 
 void GameWrapper::startGame(void) {
-
-	DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
-		window->getSize().y, 0, 0, 2);
-	DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
-		window->getSize().y, 0, -720, 2);
-	DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
-		window->getSize().y, 0, 0, 3);
-	registerAnimatableSprite(cloud1Background);
-	registerAnimatableSprite(cloud2Background);
-	registerAnimatableSprite(moveGrass);
+    setCurrentContext("game");
+    DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
+    DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
+            window->getSize().y, 0, 0, 2);
+    DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
+            window->getSize().y, 0, -720, 2);
+    DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
+            window->getSize().y, 0, 0, 3);
+    registerAnimatableSprite(cloud1Background);
+    for(int i = 0; i < 500; i++) {
+        registerAnimatableSprite(new Leaf(getCurrentContext()));
+    }
+    registerAnimatableSprite(boy);
+    registerAnimatableSprite(cloud2Background);
+    registerAnimatableSprite(moveGrass);
 
 }

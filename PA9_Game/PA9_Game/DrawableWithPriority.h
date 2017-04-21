@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
 #include <vector>
+#include <math.h>
 #include <string>
 #include <SFML/Window/Keyboard.hpp>
 
@@ -14,7 +16,7 @@ class DrawableWithPriority : public sf::Sprite {
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority);
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority);
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority);
-        virtual void update(sf::Time t);
+        virtual void update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
         virtual Message react(sf::Event e);
         virtual void receiveMessage(Message msg);
         virtual Message click();
@@ -27,11 +29,17 @@ class DrawableWithPriority : public sf::Sprite {
         void setPriority(int newPriority);
         int getPriority(void) const;
         std::vector<sf::Texture * > spriteTextures;
+        //int32_t millisecondsSinceLastUpdate;
+        std::vector<sf::Clock> clocks;
         int addNewTexture(std::string filename);
+        int getCurrentTextureIndex(void);
+        void setCurrentTexture(int index);
     private:
         int priority;
+
         std::string name;
         std::string context;
+        int currentTextureIndex;
 
 };
 

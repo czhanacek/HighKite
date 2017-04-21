@@ -4,6 +4,7 @@
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+    clocks.push_back(sf::Clock());
     context = newContext;
     name = newName;
 }
@@ -14,15 +15,16 @@ DrawableWithPriority::~DrawableWithPriority() {
     }
 }
 
- void DrawableWithPriority::setPriority(int newPriority) {
+void DrawableWithPriority::setPriority(int newPriority) {
     priority = newPriority;
 
- }
- int  DrawableWithPriority::getPriority (void) const {
+}
+int  DrawableWithPriority::getPriority (void) const {
     return priority;
 
- }
+}
 
+// You better overload your click function!
 Message DrawableWithPriority::click(void ) {
     std::cout << "I got clicked!\n";
     std::cout << "My size is (" << getSizeX() << ", " << getSizeY() << ")\n";
@@ -51,8 +53,7 @@ unsigned int DrawableWithPriority::getSizeY(void) {
 bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) {
     if(d1.getPriority() > d2.getPriority()) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 
@@ -60,6 +61,7 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
+    clocks.push_back(sf::Clock());
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -72,10 +74,10 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     priority = newPriority;
 }
 
-void DrawableWithPriority::update(sf::Time t) {
+void DrawableWithPriority::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
 
-	//nothing here
 }
+
 
 Message DrawableWithPriority::react(sf::Event e) {
 
@@ -99,8 +101,7 @@ int DrawableWithPriority::addNewTexture(std::string filename) {
         int location = spriteTextures.size();
         spriteTextures.push_back(textu);
         return location;
-    }
-    else {
+    } else {
         return -1;
     }
 }
@@ -110,6 +111,7 @@ std::string DrawableWithPriority::getName(void) {
 }
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
+    clocks.push_back(sf::Clock());
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -119,19 +121,31 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     priority = newPriority;
 }
 
- Message DrawableWithPriority::unclick()
- {
+Message DrawableWithPriority::unclick() {
     return Message();
- }
+}
 
-std::string DrawableWithPriority::getContext()
-{
+std::string DrawableWithPriority::getContext() {
     return context;
 }
 
+int DrawableWithPriority::getCurrentTextureIndex(void) {
+    return currentTextureIndex;
+}
 
-void DrawableWithPriority::receiveMessage(Message msg)
-{
+void DrawableWithPriority::setCurrentTexture(int index) {
+    if(index < 0) {
+        index = spriteTextures.size() - 1;
+    } else if(index > spriteTextures.size() - 1) {
+        index = 0;
+    }
+    setTexture(*(spriteTextures[index]));
+    currentTextureIndex = index;
+}
+
+
+
+void DrawableWithPriority::receiveMessage(Message msg) {
     // This should be overloaded by subclasses
 }
 
@@ -139,6 +153,7 @@ void DrawableWithPriority::receiveMessage(Message msg)
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
     context = newContext;
+    clocks.push_back(sf::Clock());
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
     if(loaded) {
@@ -156,8 +171,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
 bool operator< (const DrawableWithPriority &d1, const DrawableWithPriority &d2) {
     if(d1.getPriority() < d2.getPriority()) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 

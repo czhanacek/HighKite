@@ -7,7 +7,6 @@ GameWrapper::GameWrapper() {
     //window->setFramerateLimit(100);
     makeMainMenuBackground();
 
-
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -124,11 +123,15 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
 
 
 
+
+
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
 
+
 void GameWrapper::checkForClicks(void) {
+
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
@@ -142,6 +145,7 @@ void GameWrapper::checkForClicks(void) {
         }
     }
 }
+
 
 void GameWrapper::checkForUnclicks(void) {
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
@@ -184,8 +188,6 @@ void GameWrapper::setCurrentContext(std::string newCurrentContext) {
     currentContext = newCurrentContext;
 }
 
-
-
 void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
     DrawableWithPriority * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
@@ -226,5 +228,6 @@ void GameWrapper::startGame(void) {
     registerAnimatableSprite(boy);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);
+
 
 }

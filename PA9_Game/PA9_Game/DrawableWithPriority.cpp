@@ -4,7 +4,9 @@
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+
     clocks.push_back(sf::Clock());
+
     context = newContext;
     name = newName;
 }
@@ -61,7 +63,9 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
+
     clocks.push_back(sf::Clock());
+
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -112,6 +116,7 @@ std::string DrawableWithPriority::getName(void) {
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
     clocks.push_back(sf::Clock());
+
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);

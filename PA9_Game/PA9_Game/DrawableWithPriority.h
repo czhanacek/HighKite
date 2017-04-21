@@ -16,6 +16,7 @@ class DrawableWithPriority : public sf::Sprite {
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority);
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority);
         DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority);
+
         virtual void update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
         virtual Message react(sf::Event e);
         virtual void receiveMessage(Message msg);
@@ -39,6 +40,7 @@ class DrawableWithPriority : public sf::Sprite {
 
         std::string name;
         std::string context;
+
         int currentTextureIndex;
 
 };

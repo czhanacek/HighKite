@@ -2,7 +2,7 @@
 
 GameWrapper::GameWrapper() {
     srand(time(NULL));
-    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock();
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock();
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     //window->setFramerateLimit(100);
     makeMainMenuBackground();
@@ -19,7 +19,7 @@ GameWrapper::GameWrapper() {
             // In the future I'd like to have an application-specific event queue as well so that we can
             // create and handle our own events or abstract SFML events and then handle those.
 
-
+            // Yo we got that application-specific queue \0/
 
             if (event.type == sf::Event::Closed)
                 window->close();
@@ -38,7 +38,10 @@ GameWrapper::GameWrapper() {
             elapsed.restart();
             registerAnimatableSprite(new Leaf("mainmenu"));
         }
-
+        if(clk2.getElapsedTime().asSeconds() >= 5) {
+            clk2.restart();
+            cleanUpSpritesFarOffScreen();
+        }
 
 
         window->clear();
@@ -50,7 +53,7 @@ GameWrapper::GameWrapper() {
         }
         // update textures here
         for(int i = 0; i < animates.size(); i++) {
-            animates[i]->update(elapsed.getElapsedTime(), clk1.restart());
+            animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime());
         }
 
 
@@ -213,16 +216,19 @@ void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
     DrawableWithPriority * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.gif", "imgs/button-quit.gif", 700,  535);
     DrawableWithPriority * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
-
+    DrawableWithPriority * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.gif");
     DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 0);
     DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 1);
+
     Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 535);
     Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 300, 535);
     sortAnimatorsByPriority();
-    registerAnimatableSprite(mmBackground);
 
+    registerAnimatableSprite(new Cloud("cloud", "mainmenu"));
+    registerAnimatableSprite(mmBackground);
+    registerAnimatableSprite(boyfriend);
     registerAnimatableSprite(mmGrass);
     registerAnimatableSprite(boy);
     registerReactableSprite(boy);
@@ -251,3 +257,27 @@ void GameWrapper::startGame(void) {
 
 
 }
+
+
+void GameWrapper::cleanUpSpritesFarOffScreen(void) {
+    for(int i = 0; i < animates.size();) {
+        if(animates[i]->getPosition().y > 1400 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
+            std::cout << "Erased " << animates[i]->getName() << " from animates because it was too far off screen\n";
+            animates.erase(animates.begin() + i);
+        }
+        else {
+            i++;
+        }
+    }
+    for(int i = 0; i < reacts.size();) {
+        if(reacts[i]->getPosition().y > 1400 || reacts[i]->getPosition().x > 2100 || reacts[i]->getPosition().x < -2100 || reacts[i]->getPosition().y < -1400) {
+            std::cout << "Erased " << animates[i]->getName() << " from reacts because it was too far off screen\n";
+            reacts.erase(reacts.begin() + i);
+        }
+         else {
+            i++;
+        }
+    }
+}
+
+

@@ -1,7 +1,9 @@
 #include "Boy.h"
 
 Boy::Boy(std::string newName, std::string newContext, std::string filename) : DrawableWithPriority(newName, newContext, filename, 15) {
-    setPosition(900, 100);
+    setPosition(930, 130);
+    setScale(0.8, 0.8);
+    removeMe = false;
     addNewTexture("imgs/boy-bigmouth.gif");
     addNewTexture("imgs/boy-o-mouth.gif");
     addNewTexture("imgs/boy-smile.gif");
@@ -26,13 +28,9 @@ void Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
             clocks[0].restart();
         }
         if(clocks[1].getElapsedTime().asMilliseconds() >= 30) {
-            if (getPosition().y >= 650) {
-                setPosition(getPosition().x, 650);
-            }
-            else {
-                setPosition(getPosition().x, getPosition().y + (speed / 30));
-                clocks[1].restart();
-            }
+            setPosition(getPosition().x, getPosition().y + (speed / 30));
+            clocks[1].restart();
+
 
         }
 

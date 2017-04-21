@@ -5,6 +5,9 @@
 #include "Button.h"
 #include "Boy.h"
 #include "Leaf.h"
+#include "BoyFriend.h"
+#include "Cloud.h"
+
 #include <queue>
 class GameWrapper
 {
@@ -15,8 +18,9 @@ class GameWrapper
         void registerAnimatableSprite(DrawableWithPriority * newSprite);
         void removeSpritesBelongingToContext(std::string theContext);
         void registerReactableSprite(DrawableWithPriority * newSprite);
-        void runApp(void);
         void sortAnimatorsByPriority(void);
+
+        void cleanUpSpritesFarOffScreen(void);
         void handleGameWrapperMessages(Message msg);
         void makeMainMenuBackground(void);
         void checkForClicks(void);

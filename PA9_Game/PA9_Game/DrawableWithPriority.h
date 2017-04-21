@@ -24,6 +24,7 @@ class DrawableWithPriority : public sf::Sprite {
         virtual Message unclick();
         std::string getName();
         std::string getContext();
+        void setContext(std::string newContext);
         unsigned int getSizeX(void);
         unsigned int getSizeY(void);
         ~DrawableWithPriority();
@@ -32,6 +33,7 @@ class DrawableWithPriority : public sf::Sprite {
         std::vector<sf::Texture * > spriteTextures;
         //int32_t millisecondsSinceLastUpdate;
         std::vector<sf::Clock> clocks;
+        bool removeMe;
         int addNewTexture(std::string filename);
         int getCurrentTextureIndex(void);
         void setCurrentTexture(int index);

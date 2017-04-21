@@ -8,6 +8,7 @@ class Leaf : public DrawableWithPriority {
         void receiveMessage(Message msg);
         Message click();
         Message unclick();
-
+    private:
+        int stoppingPlace;
 
 };

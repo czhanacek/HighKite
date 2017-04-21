@@ -4,7 +4,7 @@
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
-
+    removeMe = true;
     clocks.push_back(sf::Clock());
 
     context = newContext;
@@ -63,7 +63,7 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
-
+    removeMe = true;
     clocks.push_back(sf::Clock());
 
     context = newContext;
@@ -110,13 +110,17 @@ int DrawableWithPriority::addNewTexture(std::string filename) {
     }
 }
 
+void DrawableWithPriority::setContext(std::string newContext) {
+    context = newContext;
+}
+
 std::string DrawableWithPriority::getName(void) {
     return name;
 }
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
     clocks.push_back(sf::Clock());
-
+    removeMe = true;
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -158,6 +162,7 @@ void DrawableWithPriority::receiveMessage(Message msg) {
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
     context = newContext;
+    removeMe = true;
     clocks.push_back(sf::Clock());
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);

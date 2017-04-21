@@ -34,6 +34,11 @@ GameWrapper::GameWrapper() {
             }
 
         }
+        if(elapsed.getElapsedTime().asSeconds() >= 3 && getCurrentContext() == "mainmenu") {
+            elapsed.restart();
+            registerAnimatableSprite(new Leaf("mainmenu"));
+        }
+
 
 
         window->clear();
@@ -74,9 +79,13 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
     if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
 
         // Switch to different if statement once the Play Game button is created.
-        removeSpritesBelongingToContext("mainmenu");
         currentContext = "game";
+        removeSpritesBelongingToContext("mainmenu");
+
         startGame();
+    }
+    if(msg.getSender() == "quit" && msg.getContent() == "unclicked") {
+        exit(0);
     }
 }
 
@@ -104,19 +113,30 @@ void GameWrapper::sortAnimatorsByPriority(void) {
 
 
 void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
+    int unremovalableException = 0;
+    for(int i = unremovalableException; i < animates.size();) {
 
-    for(int i = 0; i < animates.size();) {
-        if(animates[i]->getContext() == theContext) {
+        if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
             std::cout << "Erased " << animates[i]->getName() << " from animates\n";
             animates.erase(animates.begin() + i);
-            i = 0;
+        }
+        else if(!animates[i]->removeMe) {
+            unremovalableException++;
+            animates[i]->setContext(getCurrentContext());
+            i = unremovalableException;
         }
     }
-    for(int x = 0; x < reacts.size();) {
-        if(reacts[x]->getContext() == theContext) {
+    unremovalableException = 0;
+    for(int x = unremovalableException; x < reacts.size();) {
+        if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
             std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
             reacts.erase(reacts.begin() + x);
-            x = 0;
+        }
+        if(!reacts[x]->removeMe) {
+            unremovalableException++;
+            reacts[x]->setContext(getCurrentContext());
+            x = unremovalableException;
+
         }
     }
 }
@@ -186,26 +206,28 @@ std::string GameWrapper::getCurrentContext(void) {
 
 void GameWrapper::setCurrentContext(std::string newCurrentContext) {
     currentContext = newCurrentContext;
+    addMessageToQueue(Message("gamewrapper", "context changed"));
 }
 
 void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
+    DrawableWithPriority * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.gif", "imgs/button-quit.gif", 700,  535);
     DrawableWithPriority * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
 
     DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 0);
     DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 1);
-    Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 575);
-    Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 500, 450);
+    Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 535);
+    Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 300, 535);
     sortAnimatorsByPriority();
     registerAnimatableSprite(mmBackground);
-    for(int i = 0; i < 200; i++) {
-        registerAnimatableSprite(new Leaf(getCurrentContext()));
-    }
+
     registerAnimatableSprite(mmGrass);
     registerAnimatableSprite(boy);
     registerReactableSprite(boy);
+    registerAnimatableSprite(quit);
+    registerReactableSprite(quit);
     registerAnimatableSprite(instructions);
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
@@ -222,9 +244,7 @@ void GameWrapper::startGame(void) {
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
     registerAnimatableSprite(cloud1Background);
-    for(int i = 0; i < 500; i++) {
-        registerAnimatableSprite(new Leaf(getCurrentContext()));
-    }
+
     registerAnimatableSprite(boy);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);

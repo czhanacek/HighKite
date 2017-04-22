@@ -2,8 +2,9 @@
 #include "KiteObj.h"
 
 GameWrapper::GameWrapper() {
-    srand(time(NULL));
-    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock();
+    srand(time(NULL)); // Seed the random number generator so that we get new stuff every time we start
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(); // set up three clocks. Right now, we only use
+    // elapsed,
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     //window->setFramerateLimit(30);
     makeMainMenuBackground();
@@ -76,7 +77,7 @@ GameWrapper::GameWrapper() {
             cleanUpSpritesFarOffScreen();
         }
 
-        messageBlaster(); // Sends events to all the reactables
+        messageBlaster(); // Sends messages to all the reactables
         window->clear();
         sortAnimatorsByPriority();
 
@@ -246,7 +247,7 @@ void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
 
     Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
-    BoyFriend * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.gif");
+    BoyFriend * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.png");
     Background * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 0);
     Background * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,

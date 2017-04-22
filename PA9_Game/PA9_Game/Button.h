@@ -14,9 +14,15 @@ class Button : public DrawableWithPriority
         Message click(void);
         Message unclick(void);
         void receiveMessage(Message msg);
-        virtual ~Button();
+        ~Button();
+        Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
+        Message react(sf::Event e);
+
     protected:
     private:
+        bool movingUp;
+        int originalX, originalY, bounceInterval, ticker, windspeed;
+
 };
 
 

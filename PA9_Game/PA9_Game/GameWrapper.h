@@ -3,6 +3,11 @@
 #include "Background.h"
 #include "Message.h"
 #include "Button.h"
+#include "Boy.h"
+#include "Leaf.h"
+#include "BoyFriend.h"
+#include "Cloud.h"
+
 #include <queue>
 class GameWrapper
 {
@@ -13,8 +18,9 @@ class GameWrapper
         void registerAnimatableSprite(DrawableWithPriority * newSprite);
         void removeSpritesBelongingToContext(std::string theContext);
         void registerReactableSprite(DrawableWithPriority * newSprite);
-        void runApp(void);
         void sortAnimatorsByPriority(void);
+
+        void cleanUpSpritesFarOffScreen(void);
         void handleGameWrapperMessages(Message msg);
         void makeMainMenuBackground(void);
         void checkForClicks(void);
@@ -22,6 +28,8 @@ class GameWrapper
         void messageBlaster(void);
         void addMessageToQueue(Message msg);
 		void startGame(void);
+		std::string getCurrentContext(void);
+		void setCurrentContext(std::string newCurrentContext);
 
     protected:
     private:
@@ -29,7 +37,7 @@ class GameWrapper
         std::vector<DrawableWithPriority *> reacts; // vector of sprites that react to events at least once
         // Since both of these vectors store pointers, one sprite can be in both animates and reacts
         std::queue<Message> messageQueue;
-
+        std::string currentContext;
         sf::RenderWindow * window;
 
 };

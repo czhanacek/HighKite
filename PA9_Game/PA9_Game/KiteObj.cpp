@@ -3,8 +3,13 @@
 #include "KiteObj.h"
 
 
-KiteObj::KiteObj() : DrawableWithPriority("Kite", "Game", 50)
+KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
 {
+
+    addNewTexture("imgs/orange.jpg");
+    setCurrentTexture(0);
+    setScale(0.25, 0.25);
+    setPosition(640, 600);
 
 }
 

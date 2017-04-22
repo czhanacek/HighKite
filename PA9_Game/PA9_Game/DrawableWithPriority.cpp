@@ -51,7 +51,6 @@ unsigned int DrawableWithPriority::getSizeY(void) {
 }
 
 
-
 bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) {
     if(d1.getPriority() > d2.getPriority()) {
         return true;

@@ -2,11 +2,6 @@
 
 #include "DrawableWithPriority.h"
 
-
-
-
-
-
 class Button : public DrawableWithPriority
 {
     public:

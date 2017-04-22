@@ -265,7 +265,6 @@ void GameWrapper::startGame(void) {
 
 }
 
-
 void GameWrapper::cleanUpSpritesFarOffScreen(void) {
     for(int i = 0; i < animates.size();) {
         if(animates[i]->getPosition().y > 1400 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {

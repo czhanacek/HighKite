@@ -3,6 +3,7 @@
 Button::Button(std::string newName, std::string newContext, std::string unclickedFilename, std::string clickedFilename, int xpos, int ypos) : DrawableWithPriority(newName, newContext, unclickedFilename, 10) {
     setPosition(xpos, ypos);
     windspeed = 0;
+    moveOverride = false;
     originalX = xpos;
     originalY = ypos;
     removeMe = false;
@@ -20,7 +21,7 @@ Button::~Button() {
 }
 Message Button::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
 
-    if(clocks[1].getElapsedTime().asMilliseconds() >= bounceInterval) {
+    if(clocks[1].getElapsedTime().asMilliseconds() >= bounceInterval || moveOverride == true) {
         if(clocks[0].getElapsedTime().asMilliseconds() >= 10) {
             ticker++;
             clocks[0].restart();
@@ -52,11 +53,13 @@ Message Button::react(sf::Event e) {
 
 void Button::receiveMessage(Message msg) {
     if(msg.getSender() == "cloud" && msg.getContent() == "blowing") {
+        moveOverride = true;
         if(rand() % 10 == 1 && windspeed < 5) {
                 windspeed++;
         }
     }
     if(msg.getSender() == "cloud" && msg.getContent() == "not blowing" && windspeed > 0){
+        moveOverride = true;
         if(rand() % 2 == 1 && windspeed >= 5) {
                 windspeed--;
         }

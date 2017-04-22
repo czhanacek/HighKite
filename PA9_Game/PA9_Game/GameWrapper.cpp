@@ -246,15 +246,15 @@ void GameWrapper::setCurrentContext(std::string newCurrentContext) {
 void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
 
-    Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
+    Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.png");
     BoyFriend * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.png");
     Background * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 0);
     Background * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 1);
-    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.gif", "imgs/button-quit.gif", 700,  100);
-    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 100);
-    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.gif", "imgs/button-play-pressed.gif", 300, 100);
+    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 700,  100);
+    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 500, 100);
+    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 300, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
 
     sortAnimatorsByPriority();

@@ -1,6 +1,10 @@
 #pragma once
 #include "DrawableWithPriority.h"
 
+// THERE ARE FOUR DIFFERENT CONSTRUCTORS FOR THIS CLASS
+// While they are all different, here are some things that they all share
+// - All have removeMe set to true by default
+// - All have one clock in their clocks vector
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
@@ -32,7 +36,7 @@ Message DrawableWithPriority::click(void ) {
     std::cout << "My size is (" << getSizeX() << ", " << getSizeY() << ")\n";
     int location = spriteTextures.size();
     spriteTextures.push_back(new sf::Texture());
-    bool loaded = spriteTextures[location]->loadFromFile("imgs/apple.gif");
+    bool loaded = spriteTextures[location]->loadFromFile("imgs/apple.png");
     if(loaded) {
         std::cout << spriteTextures[location]->getSize().x << std::endl;
         setScale((double)getSizeX() / spriteTextures[location]->getSize().x, (double)getSizeY() / spriteTextures[location]->getSize().y);
@@ -60,11 +64,11 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 }
 
+
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
     removeMe = true;
     clocks.push_back(sf::Clock());
-
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -77,20 +81,14 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     priority = newPriority;
 }
 
+
+// Just a default implementations for update
 Message DrawableWithPriority::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     return Message();
 }
 
-
+// Just a default implementation for react
 Message DrawableWithPriority::react(sf::Event e) {
-
-    // Some example code to demonstrate the functionality of this function ;)
-//    if(e.type == sf::Event::KeyPressed) {
-//        if(e.key.code == sf::Keyboard::L) {
-//            setPosition(getPosition().x + 10, getPosition().y);
-//
-//        }
-//    }
     return Message();
 
 }
@@ -109,13 +107,18 @@ int DrawableWithPriority::addNewTexture(std::string filename) {
     }
 }
 
+// updates the context of the sprite. this is useful when you have a sprite
+// that stays relevant and on screen between contexts.
 void DrawableWithPriority::setContext(std::string newContext) {
     context = newContext;
 }
 
+// returns the name of the sprite. Name your sprite well!
 std::string DrawableWithPriority::getName(void) {
     return name;
 }
+
+// This constructor is useful when you just want to set a base texture for your sprite
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
     clocks.push_back(sf::Clock());
@@ -133,13 +136,33 @@ Message DrawableWithPriority::unclick() {
     return Message();
 }
 
+// returns the current context of the sprite. This ought to match the current context
+// that the game is in.
 std::string DrawableWithPriority::getContext() {
     return context;
 }
 
+// getCurrentTextureIndex just returns the index of the current texture in the spriteTextures vector
 int DrawableWithPriority::getCurrentTextureIndex(void) {
     return currentTextureIndex;
 }
+
+
+
+/* setCurrentTexture is a nifty function. Basically, it takes a texture that's already
+ * been loaded and makes it the current texture of the sprite, which means that
+ * it sets the active texture for the sprite. You do this by passing in an index in the
+ * spriteTextures vector. The indexes in the spriteTextures vector correspond to the order
+ * in which textures are loaded, so the first texture that is loaded gets an index of zero,
+ * the second gets an index of one, and so on. The part about setCurrentTexture that makes it nifty
+ * is the part where it will "loop" the index for you. So if you pass in an index that is outside
+ * the bounds of the spriteTextures vector, it will wrap the index around (indexes higher than the
+ * highest index will be wrapped around the zero, indexes less than zero will get wrapped around
+ * to the highest valid index). This allows you to add a series of frames for an animation and just
+ * increment the index that you pass in by one every time you want to advance the frame. You don't
+ * have to worry about going outside the bounds of the spriteTextures vector because this function
+ * takes care of that for you.
+ */
 
 void DrawableWithPriority::setCurrentTexture(int index) {
     if(index < 0) {

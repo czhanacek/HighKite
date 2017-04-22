@@ -15,7 +15,7 @@ class Button : public DrawableWithPriority
 
     protected:
     private:
-        bool movingUp;
+        bool movingUp, moveOverride;
         int originalX, originalY, bounceInterval, ticker, windspeed;
 
 };

@@ -5,10 +5,10 @@
 Leaf::Leaf(std::string newContext) : DrawableWithPriority("leaf", newContext, 4) {
     windspeed = 0;
     if(rand() % 2  == 1) {
-        addNewTexture("imgs/leaf-red.gif");
+        addNewTexture("imgs/leaf-red.png");
     }
     else {
-        addNewTexture("imgs/leaf-yellow.gif");
+        addNewTexture("imgs/leaf-yellow.png");
     }
     stoppingPlace = rand() % 130 + 410;
     setCurrentTexture(0);

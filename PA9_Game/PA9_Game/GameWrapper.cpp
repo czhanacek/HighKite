@@ -202,6 +202,7 @@ void GameWrapper::makeMainMenuBackground(void) {
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
     registerReactableSprite(play);
+
 }
 
 void GameWrapper::startGame(void) {
@@ -212,8 +213,10 @@ void GameWrapper::startGame(void) {
 		window->getSize().y, 0, -720, 2);
 	DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
 		window->getSize().y, 0, 0, 3);
+	DrawableWithPriority * kite = new KiteObj();
 	registerAnimatableSprite(cloud1Background);
 	registerAnimatableSprite(cloud2Background);
 	registerAnimatableSprite(moveGrass);
-
+	registerAnimatableSprite(kite);
+    registerReactableSprite(kite);
 }

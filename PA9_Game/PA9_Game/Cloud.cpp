@@ -2,7 +2,7 @@
 
 
 Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority(newName, newContext, 15) {
-    addNewTexture("imgs/windycloud.gif");
+    addNewTexture("imgs/windycloud.png");
     peekInterval = rand() % 10;
     removeMe = false;
     setCurrentTexture(0);

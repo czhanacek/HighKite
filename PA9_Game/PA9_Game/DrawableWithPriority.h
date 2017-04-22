@@ -37,6 +37,8 @@ class DrawableWithPriority : public sf::Sprite {
         int addNewTexture(std::string filename);
         int getCurrentTextureIndex(void);
         void setCurrentTexture(int index);
+
+
     private:
         int priority;
 

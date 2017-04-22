@@ -3,6 +3,7 @@
 
 
 Leaf::Leaf(std::string newContext) : DrawableWithPriority("leaf", newContext, 4) {
+    windspeed = 0;
     if(rand() % 2  == 1) {
         addNewTexture("imgs/leaf-red.gif");
     }
@@ -17,12 +18,12 @@ Leaf::Leaf(std::string newContext) : DrawableWithPriority("leaf", newContext, 4)
     setScale((double)30 / spriteTextures[0]->getSize().x, (double)30 / spriteTextures[0]->getSize().y);
 }
 
-void Leaf::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+Message Leaf::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     //std::cout << "leafs matter" << std::endl;
     if(getContext() == "mainmenu") {
         if(clocks[0].getElapsedTime().asMilliseconds() > 10) {
             if(getPosition().y < stoppingPlace + rand() % 25) {
-                setPosition(getPosition().x + rand() % 4, getPosition().y + pow(-1, rand() % 3) * (rand() % 4 ));
+                setPosition(getPosition().x + windspeed + rand() % 4, getPosition().y + pow(-1, rand() % 3) * (rand() % 4 ));
                 setRotation(getRotation() + rand() % 15 - 7);
                 clocks[0].restart();
             }
@@ -34,8 +35,8 @@ void Leaf::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
             clocks.push_back(sf::Clock());
         }
         if(clocks[0].getElapsedTime().asMilliseconds() > 10) {
-            setPosition(getPosition().x + rand() % 4, getPosition().y + pow(-1, rand() % 3) * (rand() % 4 ));
-            setRotation(getRotation() + rand() % 15 - 7);
+            setPosition(getPosition().x + windspeed +rand() % 4, getPosition().y + pow(-1, rand() % 3) * (rand() % 4 ));
+            setRotation(getRotation() + rand() % 30 - 15);
             clocks[0].restart();
 
         }
@@ -44,6 +45,7 @@ void Leaf::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
                 clocks[1].restart();
         }
     }
+    return Message();
 }
 
 Message Leaf::react(sf::Event e) {
@@ -51,7 +53,19 @@ Message Leaf::react(sf::Event e) {
 }
 
 void Leaf::receiveMessage(Message msg) {
+    if(msg.getSender() == "cloud" && msg.getContent() == "blowing") {
+        if(rand() % 5 == 1 && windspeed < 10) {
+                windspeed++;
+        }
+        //std::cout << "Received blowing message from cloud\n";
+    }
+    if(msg.getSender() == "cloud" && msg.getContent() == "not blowing" && windspeed > 0){
 
+        if(rand() % 2 == 1 && windspeed >= 10) {
+                windspeed--;
+        }
+        //std::cout << "Received not blowing message from cloud\n";
+    }
 }
 
 Message Leaf::click() {

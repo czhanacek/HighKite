@@ -3,12 +3,13 @@
 class Leaf : public DrawableWithPriority {
     public:
         Leaf(std::string newContext);
-        void update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
+        Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
         Message react(sf::Event e);
         void receiveMessage(Message msg);
         Message click();
         Message unclick();
     private:
         int stoppingPlace;
+        int windspeed;
 
 };

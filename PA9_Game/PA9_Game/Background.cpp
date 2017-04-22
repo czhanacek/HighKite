@@ -11,7 +11,7 @@ void Background::slideUpFirstTime(std::string newBackgroundFile) {
 
 }
 
-void Background::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+Message Background::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     int speed = 90;
     if(clocks[0].getElapsedTime().asMilliseconds() >= 30) {
             clocks[0].restart();
@@ -28,6 +28,7 @@ void Background::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
             setPosition(0, getPosition().y + (speed / 30));
         }
     }
+    return Message();
 }
 
 Background::~Background() {

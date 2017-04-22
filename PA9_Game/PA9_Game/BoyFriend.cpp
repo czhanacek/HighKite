@@ -6,7 +6,7 @@ BoyFriend::BoyFriend(std::string newName, std::string newContext, std::string fi
     removeMe = false;
 }
 
-void BoyFriend::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+Message BoyFriend::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     int speed = 90;
 
     if(getContext() == "game") {
@@ -16,7 +16,7 @@ void BoyFriend::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
         }
 
     }
-
+    return Message();
 }
 
 Message BoyFriend::react(sf::Event e) {

@@ -3,7 +3,8 @@
 
 Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority(newName, newContext, 15) {
     addNewTexture("imgs/windycloud.gif");
-    peekInterval = 10 + rand() % 10;
+    peekInterval = rand() % 10;
+    removeMe = false;
     setCurrentTexture(0);
     movingOut = true;
     moving = false;
@@ -15,8 +16,8 @@ Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority
     clocks.push_back(sf::Clock());
 }
 
-void Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
-    if(clocks[0].getElapsedTime().asMilliseconds() > 10) {
+Message Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+    if(clocks[0].getElapsedTime().asMilliseconds() >= 30) {
         clocks[0].restart();
         if(getPosition().x + getSizeX() < 400 && movingOut && moving) {
             move(4, 0);
@@ -25,35 +26,39 @@ void Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
             movingOut = false;
         }
         if((!movingOut && moving)) {
-            move(-1, 0);
+            move(-3, 0);
             movingOut = false;
         }
         if(getPosition().x + getSizeX() < 0 && !movingOut) {
             moving = false;
         }
-
     }
-    if(clocks[1].getElapsedTime().asSeconds() > peekInterval && !moving && getPosition().x + getSizeX() <= 0) {
-        moving = true;
-        movingOut = true;
-        peekInterval = 10 + rand() % 10;
-        clocks[1].restart();
-        std::cout << "cloud moving now!\n";
+
+    if(moving) {
+        return Message(getName(), "blowing");
+    }
+    else {
+        //std::cout << "cloud sent a message!\n";
+        return Message(getName(), "not blowing");
     }
 }
 
 Message Cloud::react(sf::Event e) {
-
+    return Message();
 }
 
 void Cloud::receiveMessage(Message msg) {
-
+    if(msg.getSender() == "playGame" && msg.getContent() == "clicked") {
+        moving = true;
+        movingOut = true;
+        peekInterval = 20 + rand() % 10;
+    }
 }
 
 Message Cloud::click() {
-
+    return Message();
 }
 
 Message Cloud::unclick() {
-
+    return Message();
 }

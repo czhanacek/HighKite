@@ -7,7 +7,7 @@ public:
 	~Background();
 	void slideUpFirstTime(std::string newBackgroundFile);
 
-	void update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 
 };
 

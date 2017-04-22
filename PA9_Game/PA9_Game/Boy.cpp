@@ -9,7 +9,7 @@ Boy::Boy(std::string newName, std::string newContext, std::string filename) : Dr
     addNewTexture("imgs/boy-smile.gif");
 }
 
-void Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+Message Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     int speed = 90;
     if(getContext() == "mainmenu") {
         //std::cout << totalElapsed.asSeconds() << std::endl;
@@ -35,6 +35,7 @@ void Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
         }
 
     }
+    return Message();
 
 }
 

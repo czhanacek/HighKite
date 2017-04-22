@@ -4,9 +4,9 @@ GameWrapper::GameWrapper() {
     srand(time(NULL));
     sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock();
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
-    //window->setFramerateLimit(100);
+    //window->setFramerateLimit(30);
     makeMainMenuBackground();
-
+    int leafInterval = rand() % 2500;
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -30,20 +30,26 @@ GameWrapper::GameWrapper() {
                 checkForUnclicks();
             }
             for(int i = 0; i < reacts.size(); i++) {
+                //std::cout << "Reacting to events\n";
                 addMessageToQueue(reacts[i]->react(event));
             }
+        }
+
+        if(elapsed.getElapsedTime().asMilliseconds() >= leafInterval  && getCurrentContext() == "mainmenu") {
+            elapsed.restart();
+            //leafInterval = rand() % 2000 + 3000;
+            Leaf * lef = new Leaf("mainmenu");
+            registerAnimatableSprite(lef);
+            registerReactableSprite(lef);
 
         }
-        if(elapsed.getElapsedTime().asSeconds() >= 3 && getCurrentContext() == "mainmenu") {
-            elapsed.restart();
-            registerAnimatableSprite(new Leaf("mainmenu"));
-        }
-        if(clk2.getElapsedTime().asSeconds() >= 5) {
+
+        if(clk2.getElapsedTime().asSeconds() >= 0.5) {
             clk2.restart();
             cleanUpSpritesFarOffScreen();
         }
 
-
+        messageBlaster(); // Sends events to all the reactables
         window->clear();
         sortAnimatorsByPriority();
 
@@ -53,12 +59,12 @@ GameWrapper::GameWrapper() {
         }
         // update textures here
         for(int i = 0; i < animates.size(); i++) {
-            animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime());
+            addMessageToQueue(animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime()));
         }
 
 
         window->display();
-        messageBlaster(); // Sends events to all the reactables
+
     }
 }
 
@@ -145,9 +151,6 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
 }
 
 
-
-
-
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
@@ -186,7 +189,7 @@ void GameWrapper::checkForUnclicks(void) {
 }
 void GameWrapper::messageBlaster(void) {
 
-    while(!messageQueue.empty()) {
+    if(!messageQueue.empty()) {
         Message currentMessage = messageQueue.front();
 
         messageQueue.pop();
@@ -214,23 +217,26 @@ void GameWrapper::setCurrentContext(std::string newCurrentContext) {
 
 void GameWrapper::makeMainMenuBackground(void) {
     setCurrentContext("mainmenu");
-    DrawableWithPriority * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.gif", "imgs/button-quit.gif", 700,  535);
-    DrawableWithPriority * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
-    DrawableWithPriority * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.gif");
-    DrawableWithPriority * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
-            window->getSize().y, 0, 0, 0);
-    DrawableWithPriority * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
-            window->getSize().y, 0, 0, 1);
 
-    Button * instructions = new Button("showInstructions", "mainmenu", "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 535);
-    Button * play = new Button("playGame", "mainmenu", "imgs/button-play.gif", "imgs/button-play-pressed.gif", 300, 535);
+    Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.gif");
+    BoyFriend * boyfriend = new BoyFriend("Friend", getCurrentContext(), "imgs/friend.gif");
+    Background * mmBackground = new Background("Background", "mainmenu", "imgs/clouds.png", window->getSize().x,
+            window->getSize().y, 0, 0, 0);
+    Background * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
+            window->getSize().y, 0, 0, 1);
+    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.gif", "imgs/button-quit.gif", 700,  100);
+    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.gif", "imgs/button-instructions-pressed.gif", 500, 100);
+    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.gif", "imgs/button-play-pressed.gif", 300, 100);
+    Cloud * windcloud = new Cloud("cloud", getCurrentContext());
+
     sortAnimatorsByPriority();
 
-    registerAnimatableSprite(new Cloud("cloud", "mainmenu"));
+    registerAnimatableSprite(windcloud);
     registerAnimatableSprite(mmBackground);
     registerAnimatableSprite(boyfriend);
     registerAnimatableSprite(mmGrass);
     registerAnimatableSprite(boy);
+    registerReactableSprite(windcloud);
     registerReactableSprite(boy);
     registerAnimatableSprite(quit);
     registerReactableSprite(quit);
@@ -242,7 +248,7 @@ void GameWrapper::makeMainMenuBackground(void) {
 
 void GameWrapper::startGame(void) {
     setCurrentContext("game");
-    DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
+    //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
     DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 2);
     DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
@@ -250,8 +256,6 @@ void GameWrapper::startGame(void) {
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
     registerAnimatableSprite(cloud1Background);
-
-    registerAnimatableSprite(boy);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);
 
@@ -264,6 +268,7 @@ void GameWrapper::cleanUpSpritesFarOffScreen(void) {
         if(animates[i]->getPosition().y > 1400 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
             std::cout << "Erased " << animates[i]->getName() << " from animates because it was too far off screen\n";
             animates.erase(animates.begin() + i);
+            i = 0;
         }
         else {
             i++;
@@ -271,8 +276,9 @@ void GameWrapper::cleanUpSpritesFarOffScreen(void) {
     }
     for(int i = 0; i < reacts.size();) {
         if(reacts[i]->getPosition().y > 1400 || reacts[i]->getPosition().x > 2100 || reacts[i]->getPosition().x < -2100 || reacts[i]->getPosition().y < -1400) {
-            std::cout << "Erased " << animates[i]->getName() << " from reacts because it was too far off screen\n";
+            std::cout << "Erased " << reacts[i]->getName() << " from reacts because it was too far off screen\n";
             reacts.erase(reacts.begin() + i);
+            i = 0;
         }
          else {
             i++;

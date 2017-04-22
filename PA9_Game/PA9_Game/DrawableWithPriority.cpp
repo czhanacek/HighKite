@@ -78,8 +78,8 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     priority = newPriority;
 }
 
-void DrawableWithPriority::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
-
+Message DrawableWithPriority::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
+    return Message();
 }
 
 

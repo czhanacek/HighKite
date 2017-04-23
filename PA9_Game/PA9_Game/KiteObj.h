@@ -16,10 +16,10 @@ public:
     void keepInBounds();
 
 private:
-    int mXPos;
-    int mYPos;
+    // This is the kites velocity in the x Direction
     int mXVelocity;
     int mYVelocity;
+    // This is the current velocity
     float mAngle;
 
 };

@@ -33,30 +33,34 @@ Message KiteObj::react(sf::Event e)
 
 void KiteObj::receiveMessage(Message msg)
 {
+
+
     if(msg.getSender() == "gamewrapper"){
         if(msg.getContent() == "L pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity < 15){
+            if(mXVelocity < 3){
+            std::cout << "Velocity increased in POSITIVE x" << std::endl;
                 mXVelocity++;
             }
-            std::cout << "Velocity increased!" << std::endl;
+           else{
+                std::cout << "Velocity MAXIMISED" << std::endl;
+            }
         }
         else if(msg.getContent() == "S pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity < 15){
+            if(mXVelocity > -3){
+            std::cout << "Velocity increased in NEGATIVE x" << std::endl;
                 mXVelocity--;
             }
-            std::cout << "Velocity decreased!" << std::endl;
+            else{
+                std::cout << "Velocity MINIMIZED" << std::endl;
+            }
         }
         else if(msg.getContent() == "L released"){
-            mXVelocity = 0;
         }
         else if(msg.getContent() == "S released"){
-            mXVelocity = 0;
-
         }
     }
-
 }
 
 Message KiteObj::click()

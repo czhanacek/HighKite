@@ -3,8 +3,6 @@
 
 KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
 {
-    mXPos = 640;
-    mYPos = 300;
     mXVelocity = 0;
     mYVelocity = 0;
     mAngle = 0.0;
@@ -23,7 +21,7 @@ Message KiteObj::update(sf::Time t, sf::Time y)
 {
     // This will generate some random rotation on the kite
     if(clocks[0].getElapsedTime().asMilliseconds() % 70 == 0){
-        DrawableWithPriority::setRotation(rand() % 6 - 3);
+        DrawableWithPriority::setRotation(rand() % 6 - 3 + mXVelocity);
         clocks[0].restart();
     }
     setPosition(getPosition().x + mXVelocity, 400 - mYVelocity);

@@ -22,12 +22,12 @@ GameWrapper::GameWrapper() {
     sf::Music music;
     music.openFromFile("sounds/lafemme.ogg");
     music.play();
-    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(); // set up three clocks. Right now, we only use
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(), elapsed2 = sf::Clock(); // set up three clocks. Right now, we only use
     // elapsed,
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     //window->setFramerateLimit(30);
     makeMainMenuBackground();
-    int leafInterval = rand() % 2500;
+    int leafInterval = rand() % 2500 + 500;
     bool sCurrentlyPressed = false, lCurrentlyPressed = false;
     while (window->isOpen()) {
         sf::Event event;
@@ -93,7 +93,14 @@ GameWrapper::GameWrapper() {
             Leaf * lef = new Leaf("mainmenu");
             registerAnimatableSprite(lef);
             registerReactableSprite(lef);
+        }
 
+        if(elapsed2.getElapsedTime().asMilliseconds() >= 1000  && getCurrentContext() == "game") {
+            elapsed2.restart();
+            //leafInterval = rand() % 2000 + 3000;
+            DrawableWithPriority * enemy = new Eagle("blah", getCurrentContext());
+            registerAnimatableSprite(enemy);
+            registerReactableSprite(enemy);
         }
 
         if(clk2.getElapsedTime().asSeconds() >= 0.5) {
@@ -307,11 +314,13 @@ void GameWrapper::startGame(void) {
     //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
     DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 2);
+
     DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, -720, 2);
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
     DrawableWithPriority * kite = new KiteObj();
+
     registerAnimatableSprite(cloud1Background);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);

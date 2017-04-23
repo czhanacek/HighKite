@@ -1,18 +1,28 @@
 #pragma once
-#define RIGHT 1
-#define DOWN_R 2
-#define DOWN_L 3
-#define LEFT 4
+
+#include "DrawableWithPriority.h"
+
 #include <math.h>
 
+// The idea behind the enemy class is that it has common attributes that will be shared among all the enemies:
+// horizontal/vertical speed,  and its direction
+// all these values have appropriate setters and getter
 
-class Enemy : public sf::Sprite
+class Enemy : public DrawableWithPriority
 {
 public:
-	Enemy(float positionX, float positionY)
-	{
-		setPosition(positionX, positionY);
-	}
+	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) : DrawableWithPriority(newName, newContext, filename, x, y, newPriority)
+	{}
+
+	Enemy(std::string newName, std::string newContext, int newPriority) :DrawableWithPriority(newName, newContext, newPriority)
+	{}
+
+	Enemy(std::string newName, std::string newContext, std::string filename, int newPriority) :DrawableWithPriority(newName, newContext, filename, newPriority)
+	{}
+
+	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) :DrawableWithPriority(newName, newContext, filename, x, y, iPosX, iPosY, newPriority)
+	{}
+
 
 	float getMovementSpeedHorizontal()
 	{
@@ -24,19 +34,9 @@ public:
 		return movementSpeedDown;
 	}
 
-	int getMovementTracker()
-	{
-		return movementTracker;
-	}
-
 	int getDirection()
 	{
 		return direction;
-	}
-
-	void setMovementTracker(int newTracker)
-	{
-		movementTracker = newTracker;
 	}
 
 	void setMovementSpeedHorizontal(float newSpeed)
@@ -54,231 +54,421 @@ public:
 		direction = newDirection;
 	}
 
-	virtual void movement() = 0;
+	//replace movement with an overriden update()
+
 
 private:
 	float movementSpeedDown;
 	float movementSpeedHorizontal;
-	int movementTracker = 0;
 	int direction;
 
 };
 
+
+// Bird only goes striaght down, the most basic of enemies!
 class Bird : public Enemy
 {
 public:
-	Bird(float positionX, float positionY): Enemy(positionX, positionY)
+
+	Bird(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
-		setMovementSpeedDown(1);
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/button.jpg");
+		setCurrentTexture(0);
+		setMovementSpeedDown(3);
 		setMovementSpeedHorizontal(0);
 		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(rand() % (1280 - 2*(this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		//setPosition(100, 100);
+		clocks.push_back(sf::Clock());
 	}
 
 	~Bird()
 	{
 	}
 
-	 void movement()  // birds will move only straight down for the time being 
-	{	
-		sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+	Message update(sf::Time t, sf::Time y)  // birds will move only straight down for the time being
+	{
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 20) {
+			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+			clocks[0].restart();
+		}
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
+			// Update Animation
+			clocks[1].restart();
+		}
+		return Message();
 	}
 
 private:
 
 };
 
+// Like the Bird, Eagle will move downwards but it will go down in a sine-like path, hence the need
+// for a angle data member
 class Eagle : public Enemy
 {
 public:
-	Eagle(float positionX, float positionY) : Enemy(positionX, positionY)
+	Eagle(std::string newName, std::string newContext) : Enemy(newName, newContext, 15)
 	{
-		setMovementSpeedDown(2);
-		setMovementSpeedHorizontal(2);
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/button.jpg");
+		setCurrentTexture(0);
+		setMovementSpeedDown(5);
+		setMovementSpeedHorizontal(5);
 		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		clocks.push_back(sf::Clock());
 	}
+
 	~Eagle()
 	{}
 
-	void movement()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)  // birds will move only straight down for the time being
 	{
-		
-		sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 
-		angle++;
-		if (angle % 180 == 0)
-		{
-			setDirection(getDirection() * -1);
+			angle++;
+			if (angle % 180 == 0)
+			{
+				setDirection(getDirection()*-1);
+			}
+
+			clocks[0].restart();
 		}
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
+			// Update Animation
+			setRotation((getRotation() + 1) *-1);
+			clocks[1].restart();
+		}
+		return Message();
 	}
+
 private:
 	int angle = 0;
 };
 
+
+//The seagull first goes in a circle and divebombs straight downwards, hence the need for the angle data member again
 class Seagull : public Enemy
 {
 public:
-	Seagull(float positionX, float positionY) : Enemy(positionX, positionY) {
-		setMovementSpeedDown(1);
-		setMovementSpeedHorizontal(2);
-		setDirection(1);
-	}
-	~Seagull(){}
-
-	void movement()
+	Seagull(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
-		if (fullRotation == false)
-		{
-			sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
-			angle++;
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		setCurrentTexture(0);
+		setMovementSpeedDown(1);
+		setMovementSpeedHorizontal(1);
+		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
+		clocks.push_back(sf::Clock());
+	}
+
+	~Seagull() {}
+
+	void update()
+	{
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+			if (fullRotation == false)  // we move in a circle until the seagull has gone in a circle
+			{
+				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
+				setRotation(getRotation() + 1);
+				angle++;
+			}
+			else  // DIVEBOMB!
+			{
+				sf::Sprite::move(0, getMovementSpeedDown());
+			}
+
+			if (angle == 360)  //we set fullRotation to true if angle = 360 ie when the seagull has gone around in a full circle
+			{
+				setMovementSpeedDown(4);
+				fullRotation = true;
+			}
+			clocks[0].restart();
 		}
-		else
-		{
-			sf::Sprite::move(0, getMovementSpeedDown());
+		if (clocks[1].getElapsedTime().asMilliseconds() == 500) {
+			// Update animation
+			clocks[1].restart();
 		}
 
-		
-		if (angle == 360)
-		{
-			setMovementSpeedDown(4);
-			fullRotation = true;
-		}
-		
 	}
 private:
 	int angle = 0;
 	bool fullRotation = false;
 };
 
+
+//Stereotypically, stars are depicted as traveling in a diagonal manner, coming in from a corner og a page, picture, etc.
+//hence our ShootingStar will do the same
 class ShootingStar : public Enemy
 {
 public:
-	ShootingStar(float positionX, float positionY) : Enemy(positionX, positionY) {
+
+	ShootingStar(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	{
+		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
-		setMovementSpeedHorizontal(2);
+		setMovementSpeedHorizontal(3);
 		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(-50, -50 + ( rand() % 11 - 10));
+		clocks.push_back(sf::Clock());
 	}
+
 	~ShootingStar() {}
 
-	void movement()
+	void update()
 	{
-		sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+			if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+				sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+				clocks[0].restart();
+			}
+			if (clocks[1].getElapsedTime().asMilliseconds() == 100) {
+				this->setRotation(getRotation() + 1);
+				clocks[1].restart();
+			}
+
 	}
 private:
 
 };
 
+
+//THe nuke should travel to the middle of the screen and explode once it is at the middle
 class Nuke : public Enemy
 {
 public:
-	Nuke(float positionX, float positionY) : Enemy(positionX, positionY) {
-		setMovementSpeedDown(2);
+
+	Nuke(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	{
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		setMovementSpeedDown(1);
 		setMovementSpeedHorizontal(0);
 		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), 50);
+		clocks.push_back(sf::Clock());
 	}
+
 	~Nuke() {}
 
-	void movement()
+	void update()
 	{
 		//go to middle of screen then blow up
-		if (this->getPosition().y < 330)
-		{
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
 			sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
-			setMovementTracker(getMovementTracker() + 1);
+			clocks[0].restart();
+		}
+		if (this->getPosition().y == 600)
+		{
+			// BLOW UP!
 		}
 
-		
 	}
 
 private:
 };
 
+
+//The spaceship should travel downwards like the eagle did, in a sine path, while shooting beams at certain intervals
 class Spaceship : public Enemy
 {
 public:
-	Spaceship(float positionX, float positionY) : Enemy(positionX, positionY) {
-		setMovementSpeedDown(3);
-		setMovementSpeedHorizontal(5);
-		setDirection(1);
-	}
-	~Spaceship() {}
-	
-	
-	void movement()
+
+	Spaceship(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		setCurrentTexture(0);
+		setMovementSpeedDown(1);
+		setMovementSpeedHorizontal(1);
+		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
+		clocks.push_back(sf::Clock());
+	}
 
-		sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+	~Spaceship() {}
 
-		angle += 1;
 
-		if (angle % 180 == 0)
-		{
-			setDirection(getDirection() * -1);
+	void update()  // birds will move only straight down for the time being
+	{
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+
+				angle++;
+				if (angle % 180 == 0)
+				{
+					setDirection(getDirection()*-1);
+				}
+
+				clocks[0].restart();
+			}
+		if (clocks[1].getElapsedTime().asSeconds() == 3) {
+				// Shoot!
+				clocks[1].restart();
 		}
 	}
 
+private:
 	int angle = 0;
-	sf::Sprite bullet;
-private:
-	
 };
 
-class Projectile : public sf::RectangleShape
-{
-public:
-	Projectile() :RectangleShape()
-	{
-		this->setFillColor(sf::Color::Green);
-		this->setSize(sf::Vector2f(5, 5));
-		this->setOutlineColor(sf::Color::Green);
-		this->setOutlineThickness(1);
-	}
-private:
-
-};
-
+// The missile will travel the opposite of how the ShootingStar did;
+//It will come from one of the bottom corners and go towards the opposite corner
 class Missile : public Enemy
 {
 public:
-	Missile(float positionX, float positionY) : Enemy(positionX, positionY) {
-		setMovementSpeedDown(2);
-		setMovementSpeedHorizontal(3);
+
+	Missile(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	{
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		setMovementSpeedDown(1);
+		setMovementSpeedHorizontal(2);
 		setDirection(-1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(-50, 770 + (rand() % 11 - 10));
+		clocks.push_back(sf::Clock());
 	}
+
 	~Missile() {}
 
-	void movement()
+	void update()
 	{
-		sf::Sprite::move(getMovementSpeedHorizontal(), getDirection()*getMovementSpeedDown());
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+			sf::Sprite::move(getDirection()* getMovementSpeedHorizontal(), getDirection()*getMovementSpeedDown());
+			clocks[0].restart();
+		}
+		if (clocks[1].getElapsedTime().asMilliseconds() == 100) {
+		// change animation
+			clocks[1].restart();
+		}
+
 	}
 private:
 
 };
 
+
+// THe football will travel in a semisphere path, going from the bottom corner to the other bottom corner
 class Football : public Enemy
 {
 public:
-	Football(float positionX, float positionY) : Enemy(positionX, positionY)
+	Football(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
-		setMovementSpeedDown(10);
-		setMovementSpeedHorizontal(10);
-		setDirection(-1);
-		
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		setMovementSpeedDown(1);
+		setMovementSpeedHorizontal(1);
+		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(-50, 650 + (rand() % 11 - 10));
+		clocks.push_back(sf::Clock());
 	}
+
 	~Football()
 	{}
 
-	void movement()
+	void update()
 	{
-		sf::Sprite::move(sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedHorizontal() , cos(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+		sf::Sprite::move(sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedHorizontal(), cos(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 
-		angle++;
-		if (angle == 181)
-		{
-			setMovementSpeedDown(0);
-			setMovementSpeedHorizontal(0);
+			angle++;
+			if (angle == 181)
+			{
+				//Not sure what to do here
+			}
+			clocks[0].restart();
+		}
+		if (clocks[1].getElapsedTime().asMilliseconds() == 500) {
+			//Update Animation
+			clocks[1].restart();
+
 		}
 	}
 private:
 	int angle = 0;
 };
 
+class Mothership : public Enemy
+{
+private:
+	int amountShot = 0;
+	bool divebomb = false;
+	DrawableWithPriority* Target;
+public:
+	Mothership(std::string newName, std::string newContext, DrawableWithPriority* newTarget) : Enemy(newName, newContext, 15)
+	{
+		Target = newTarget; //Now we can keep track of where the kite is
+		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/button.jpg");
+		setCurrentTexture(0);
+		setMovementSpeedDown(0);
+		setMovementSpeedHorizontal(2);
+		setDirection(1);
+		//set scale and position
+		setScale(0.35, 0.35);
+		setPosition(-50, 30);
+		clocks.push_back(sf::Clock());
+	}
+
+	void update()
+	{
+		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {  //Movement
+			if (divebomb && getMovementSpeedDown() != 4)
+			{
+				if (abs(this->getPosition().x - Target->getPosition().x) < 10)
+				{
+					setDirection(0);
+					setMovementSpeedDown(4);
+				}
+				clocks[0].restart();
+			}
+		}
+
+		if (clocks[1].getElapsedTime().asSeconds() == 2 && !divebomb) {
+				if (this->getPosition().x < Target->getPosition().x && getDirection() != 1) //Kite is to right of Mothership
+				{
+					setDirection(1);
+				}
+				else if (this->getPosition().x > Target->getPosition().x && getDirection() != -1) //Kite is to left of Mothership
+				{
+					setDirection(-1);
+				}
+				else //Mothership is directly above kite
+				{
+					setDirection(0);
+				}
+				clocks[1].restart();
+		}
+
+		if (clocks[2].getElapsedTime().asSeconds() == 3 && !divebomb) {
+				//Shoot!
+				amountShot++;
+				if (amountShot >= 5)
+				{
+					divebomb == true;
+				}
+				clocks[2].restart();
+				//Maybe look into shootingg instead when ship is really close to kite?
+		}
+
+		if (clocks[3].getElapsedTime().asMilliseconds() == 500) {
+				//Update amnimation
+				clocks[3].restart();
+		}
+
+	}
+};

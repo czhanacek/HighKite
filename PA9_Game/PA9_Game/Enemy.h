@@ -72,7 +72,7 @@ class Bird : public Enemy
 {
 public:
 
-	Bird(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Bird(std::string newName, std::string newContext) :Enemy("Bird", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setCurrentTexture(0);
@@ -111,7 +111,7 @@ private:
 class Eagle : public Enemy
 {
 public:
-	Eagle(std::string newName, std::string newContext) : Enemy(newName, newContext, 15)
+	Eagle(std::string newName, std::string newContext) : Enemy("Eagle", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setCurrentTexture(0);
@@ -132,6 +132,15 @@ public:
 		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
 			sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 			
+			if (this->getPosition().x < 1)
+			{
+				setPosition( getSizeX(), this->getPosition().y);
+			}
+			else if (this->getPosition().x > 1279)
+			{
+				setPosition(1279 - getSizeX(), this->getPosition().y);
+			}
+
 			angle++;
 			if (angle % 180 == 0)
 			{
@@ -155,7 +164,7 @@ private:
 class Seagull : public Enemy
 {
 public:
-	Seagull(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Seagull(std::string newName, std::string newContext) :Enemy("Seagull", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setCurrentTexture(0);
@@ -208,7 +217,7 @@ class ShootingStar : public Enemy
 {
 public:
 
-	ShootingStar(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	ShootingStar(std::string newName, std::string newContext) :Enemy("ShootingStar", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
@@ -242,7 +251,7 @@ class Nuke : public Enemy
 {
 public:
 
-	Nuke(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Nuke(std::string newName, std::string newContext) :Enemy("Nuke", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
@@ -277,7 +286,7 @@ class Spaceship : public Enemy
 {
 public:
 
-	Spaceship(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Spaceship(std::string newName, std::string newContext) :Enemy("Spaceship", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setCurrentTexture(0);
@@ -297,6 +306,15 @@ public:
 	{
 		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
 				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+
+				if (this->getPosition().x < 1)
+				{
+					setPosition(getSizeX(), this->getPosition().y);
+				}
+				else if (this->getPosition().x > 1279)
+				{
+					setPosition(1279 - getSizeX(), this->getPosition().y);
+				}
 
 				angle++;
 				if (angle % 180 == 0)
@@ -322,7 +340,7 @@ class Missile : public Enemy
 {
 public:
 
-	Missile(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Missile(std::string newName, std::string newContext) :Enemy("Missile", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
@@ -355,7 +373,7 @@ private:
 class Football : public Enemy
 {
 public:
-	Football(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
+	Football(std::string newName, std::string newContext) :Enemy("Football", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
@@ -398,7 +416,7 @@ private:
 	bool divebomb = false;
 	Enemy* Target;
 public:
-	Mothership(std::string newName, std::string newContext Enemy* newTarget) :Enemy(newName, newContext, 15)
+	Mothership(std::string newName, std::string newContext, Enemy* newTarget) :Enemy("Mothership", "game", 15)
 	{
 		Target = newTarget; //Now we can keep track of where the kite is
 		// use addNewTexture() to add texture to this enemy and add to texture vector
@@ -439,6 +457,7 @@ public:
 					setDirection(0);
 				}
 				clocks[1].restart();
+
 		}
 
 		if (clocks[2].getElapsedTime().asSeconds() == 3 && !divebomb) {
@@ -456,6 +475,15 @@ public:
 				//Update amnimation
 				clocks[3].restart();
 		}
-			
+		
+		sf::Sprite::move(getDirection() * getMovementSpeedHorizontal(), getMovementSpeedDown());
+		if (this->getPosition().x < 1)
+		{
+			setPosition(getSizeX(), this->getPosition().y);
+		}
+		else if (this->getPosition().x > 1279)
+		{
+			setPosition(1279 - getSizeX(), this->getPosition().y);
+		}
 	}
 }

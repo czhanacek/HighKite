@@ -1,6 +1,20 @@
 #include "GameWrapper.h"
 #include "KiteObj.h"
 
+/* Current message senders and their messages
+    - gamewrapper
+        - context changed
+    - cloud
+        - blowing
+        - not blowing
+    - playGame (it's a button)
+        - clicked
+        - unclicked
+    - quit
+        - clicked
+        - unclicked
+*/
+
 GameWrapper::GameWrapper() {
     srand(time(NULL)); // Seed the random number generator so that we get new stuff every time we start
     sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(); // set up three clocks. Right now, we only use
@@ -61,6 +75,11 @@ GameWrapper::GameWrapper() {
                 //std::cout << "Reacting to events\n";
                 addMessageToQueue(reacts[i]->react(event));
             }
+            if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Q) {
+                exit(0);
+            }
+
+
         }
 
         if(elapsed.getElapsedTime().asMilliseconds() >= leafInterval  && getCurrentContext() == "mainmenu") {
@@ -252,9 +271,9 @@ void GameWrapper::makeMainMenuBackground(void) {
             window->getSize().y, 0, 0, 0);
     Background * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 1);
-    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 700,  100);
-    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 500, 100);
-    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 300, 100);
+    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 600,  100);
+    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 400, 100);
+    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 200, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
 
     sortAnimatorsByPriority();

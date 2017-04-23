@@ -17,16 +17,16 @@ Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority
 }
 
 Message Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
-    if(clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+    if(clocks[0].getElapsedTime().asMilliseconds() >= 10) {
         clocks[0].restart();
         if(getPosition().x + getSizeX() < 400 && movingOut && moving) {
-            move(4, 0);
+            move(3, 0);
         }
         if(getPosition().x + getSizeX() >= 400) {
             movingOut = false;
         }
         if((!movingOut && moving)) {
-            move(-3, 0);
+            move(-7, 0);
             movingOut = false;
         }
         if(getPosition().x + getSizeX() < 0 && !movingOut) {

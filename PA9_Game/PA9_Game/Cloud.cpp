@@ -3,6 +3,7 @@
 
 Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority(newName, newContext, 15) {
     addNewTexture("imgs/windycloud.png");
+    std::cout << "Sound worked?: " << addNewSound("sounds/windy.ogg") << std::endl;
     peekInterval = rand() % 10;
     removeMe = false;
     setCurrentTexture(0);
@@ -27,6 +28,7 @@ Message Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
         }
         if((!movingOut && moving)) {
             move(-7, 0);
+            soundplayer.setVolume(soundplayer.getVolume() - 3);
             movingOut = false;
         }
         if(getPosition().x + getSizeX() < 0 && !movingOut) {
@@ -35,10 +37,11 @@ Message Cloud::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
     }
 
     if(moving) {
+
         return Message(getName(), "blowing");
     }
     else {
-        //std::cout << "cloud sent a message!\n";
+
         return Message(getName(), "not blowing");
     }
 }
@@ -50,6 +53,7 @@ Message Cloud::react(sf::Event e) {
 void Cloud::receiveMessage(Message msg) {
     if(msg.getSender() == "playGame" && msg.getContent() == "clicked") {
         moving = true;
+        playSound(0);
         movingOut = true;
         peekInterval = 20 + rand() % 10;
     }

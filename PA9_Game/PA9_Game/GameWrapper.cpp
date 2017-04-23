@@ -1,5 +1,5 @@
 #include "GameWrapper.h"
-#include "KiteObj.h"
+
 
 /* Current message senders and their messages
     - gamewrapper
@@ -17,6 +17,10 @@
 
 GameWrapper::GameWrapper() {
     srand(time(NULL)); // Seed the random number generator so that we get new stuff every time we start
+    // start the music now
+    sf::Music music;
+    music.openFromFile("sounds/lafemme.ogg");
+    music.play();
     sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(); // set up three clocks. Right now, we only use
     // elapsed,
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
@@ -196,6 +200,8 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
         }
     }
 }
+
+
 
 
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works

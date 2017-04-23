@@ -7,6 +7,8 @@
 #include "Leaf.h"
 #include "BoyFriend.h"
 #include "Cloud.h"
+#include "KiteObj.h"
+
 
 #include <queue>
 class GameWrapper

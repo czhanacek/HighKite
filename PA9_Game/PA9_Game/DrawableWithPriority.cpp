@@ -15,10 +15,36 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     name = newName;
 }
 
+
+int DrawableWithPriority::getCurrentSoundIndex(void) {
+    return currentSoundIndex;
+}
+void DrawableWithPriority::playSound(int index) {
+  soundplayer.setBuffer(*(sounds[index]));
+  currentSoundIndex = index;
+  soundplayer.play();
+}
+
+int DrawableWithPriority::addNewSound(std::string filename) {
+    sf::SoundBuffer * sound = new sf::SoundBuffer;
+    bool loaded = sound->loadFromFile(filename);
+    if(loaded) {
+        int location = sounds.size();
+        sounds.push_back(sound);
+        return location;
+    } else {
+        return -1;
+    }
+}
+
+
 // delete all the sprite textures (cuz they're pointers)
 DrawableWithPriority::~DrawableWithPriority() {
     for(int i = 0; i < spriteTextures.size(); i++) {
         delete spriteTextures[i];
+    }
+    for(int i = 0; i < sounds.size(); i++) {
+        delete sounds[i];
     }
 }
 

@@ -88,6 +88,7 @@ GameWrapper::~GameWrapper() {
 void GameWrapper::handleGameWrapperMessages(Message msg) {
     if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
 
+
         // Switch to different if statement once the Play Game button is created.
         currentContext = "game";
         removeSpritesBelongingToContext("mainmenu");

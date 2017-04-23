@@ -3,7 +3,7 @@
 
 Cloud::Cloud(std::string newName, std::string newContext) : DrawableWithPriority(newName, newContext, 15) {
     addNewTexture("imgs/windycloud.png");
-    std::cout << "Sound worked?: " << addNewSound("sounds/windy.ogg") << std::endl;
+
     peekInterval = rand() % 10;
     removeMe = false;
     setCurrentTexture(0);

@@ -17,15 +17,15 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
 
 KiteObj::~KiteObj()
 {
-
 }
 
 Message KiteObj::update(sf::Time t, sf::Time y)
 {
+    // This will generate some random rotation on the kite
     if(clocks[0].getElapsedTime().asMilliseconds() % 70 == 0){
         DrawableWithPriority::setRotation(rand() % 6 - 3);
+        clocks[0].restart();
     }
-    //sf::Transform().rotate(rand() % 6 - 3, getPosition().x + (getSizeX() / 2), getPosition().y + (getSizeY() / 2));
     setPosition(getPosition().x + mXVelocity, 400 - mYVelocity);
 
     return Message();

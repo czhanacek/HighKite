@@ -8,12 +8,17 @@ class KiteObj : public DrawableWithPriority
 public:
     KiteObj();
     ~KiteObj();
-    virtual void update(sf::Time t);
+    virtual Message update(sf::Time t, sf::Time y);
     virtual Message react(sf::Event e);
     virtual void receiveMessage(Message msg);
     virtual Message click();
     virtual Message unclick();
 
 private:
+    int mXPos;
+    int mYPos;
+    int mXVelocity;
+    int mYVelocity;
+    float mAngle;
 
 };

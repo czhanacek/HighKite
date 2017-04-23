@@ -1,4 +1,5 @@
 #include "GameWrapper.h"
+#include "KiteObj.h"
 
 GameWrapper::GameWrapper() {
     srand(time(NULL));
@@ -7,6 +8,7 @@ GameWrapper::GameWrapper() {
     //window->setFramerateLimit(30);
     makeMainMenuBackground();
     int leafInterval = rand() % 2500;
+    bool sCurrentlyPressed = false, lCurrentlyPressed = false;
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -23,12 +25,37 @@ GameWrapper::GameWrapper() {
 
             if (event.type == sf::Event::Closed)
                 window->close();
-            if(event.type == sf::Event::MouseButtonPressed) {
+            else if(event.type == sf::Event::MouseButtonPressed) {
                 checkForClicks();
             }
-            if(event.type == sf::Event::MouseButtonReleased) {
+            else if(event.type == sf::Event::MouseButtonReleased) {
                 checkForUnclicks();
             }
+            else if(event.type == sf::Event::KeyPressed){
+                if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
+                    addMessageToQueue(Message("gamewrapper", "L pressed"));
+                    std::cout << "L pressed" << std::endl;
+                    lCurrentlyPressed = true;
+                }
+                else if(!sCurrentlyPressed && event.key.code == sf::Keyboard::S){
+                    addMessageToQueue(Message("gamewrapper", "S pressed"));
+                    std::cout << "S pressed" << std::endl;
+                    sCurrentlyPressed = true;
+                }
+            }
+            else if(event.type == sf::Event::KeyReleased){
+                if(lCurrentlyPressed && event.key.code == sf::Keyboard::L){
+                    addMessageToQueue(Message("gamewrapper", "L released"));
+                    std::cout << "L released" << std::endl;
+                    lCurrentlyPressed = false;
+                }
+                else if(sCurrentlyPressed && event.key.code == sf::Keyboard::S){
+                    addMessageToQueue(Message("gamewrapper", "S released"));
+                    std::cout << "S released" << std::endl;
+                    sCurrentlyPressed = false;
+                }
+            }
+
             for(int i = 0; i < reacts.size(); i++) {
                 //std::cout << "Reacting to events\n";
                 addMessageToQueue(reacts[i]->react(event));
@@ -53,14 +80,14 @@ GameWrapper::GameWrapper() {
         window->clear();
         sortAnimatorsByPriority();
 
-
+        for(int i = 0; i < animates.size(); i++) {
+            addMessageToQueue(animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime()));
+        }
         for(int i = 0; i < animates.size(); i++) {
             window->draw(*(animates[i]));
         }
         // update textures here
-        for(int i = 0; i < animates.size(); i++) {
-            addMessageToQueue(animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime()));
-        }
+
 
 
         window->display();
@@ -189,7 +216,7 @@ void GameWrapper::checkForUnclicks(void) {
 }
 void GameWrapper::messageBlaster(void) {
 
-    if(!messageQueue.empty()) {
+    while(!messageQueue.empty()) {
         Message currentMessage = messageQueue.front();
 
         messageQueue.pop();
@@ -287,5 +314,3 @@ void GameWrapper::cleanUpSpritesFarOffScreen(void) {
         }
     }
 }
-
-

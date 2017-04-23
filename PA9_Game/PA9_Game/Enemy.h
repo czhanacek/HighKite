@@ -448,16 +448,14 @@ public:
 
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asSeconds() >= 30) {  //Move every 30 milliseconds
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {  //Move every 30 milliseconds
 			move(getDirection()*getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
 
 		// Here we check whether to divebomb or to keep following the kite
-		if (clocks[1].getElapsedTime().asSeconds() >= 2 && !divebomb) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500 && divebomb && getMovementSpeedDown != 4) {
 			//We enter this if statement once we have shot 5 times
-			if (divebomb && getMovementSpeedDown != 4)
-			{
 				//We do the getMovementSpeedDown check so that we dont check once the spaceship is dive bombing
 				// Once we are divebombing, there is no moving horizontally
 				if (abs(this->getPosition().x - Target->getPosition().x) < 10)
@@ -466,9 +464,11 @@ public:
 					setDirection(0);
 					setMovementSpeedDown(5);
 				}
-			}
+			clocks[1].restart();
+		}
 
-			else {   //Here we check if we are still following the kite
+		if (clocks[2].getElapsedTime().asSeconds() >= 2 && !divebomb) {
+			   //Here we check if we are still following the kite
 				if (this->getPosition().x < Target->getPosition().x && getDirection() != 1) //Kite is to right of Mothership
 				{
 					setDirection(1);
@@ -481,24 +481,23 @@ public:
 				{
 					setDirection(0);
 				}
-				clocks[1].restart();
-			}
+			clocks[2].restart();
 		}
 
-		if (clocks[2].getElapsedTime().asSeconds() == 3 && !divebomb) {
+		if (clocks[3].getElapsedTime().asSeconds() == 3 && !divebomb) {
 				//Shoot!
 				amountShot++;
 				if (amountShot >= 5)
 				{
 					divebomb == true;
 				}
-				clocks[2].restart();
+				clocks[3].restart();
 				//Maybe look into shootingg instead when ship is really close to kite?
 		}
 
-		if (clocks[3].getElapsedTime().asMilliseconds() >= 500) {
+		if (clocks[4].getElapsedTime().asMilliseconds() >= 500) {
 				//Update amnimation
-				clocks[3].restart();
+				clocks[4].restart();
 		}
 		
 		sf::Sprite::move(getDirection() * getMovementSpeedHorizontal(), getMovementSpeedDown());

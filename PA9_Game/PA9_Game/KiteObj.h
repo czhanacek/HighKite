@@ -13,6 +13,7 @@ public:
     virtual void receiveMessage(Message msg);
     virtual Message click();
     virtual Message unclick();
+    void keepInBounds();
 
 private:
     int mXPos;

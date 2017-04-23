@@ -12,21 +12,16 @@
 // The idea behind the enemy class is that it has common attributes that will be shared among all the enemies:
 // horizontal/vertical speed,  and its direction
 // all these values have appropriate setters and getter
+// All enemies are based off the DrawableWithPriority class
 
 class Enemy : public DrawableWithPriority
 {
 public:
-	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) : DrawableWithPriority(newName, newContext, filename, x, y, newPriority)
-	{}
 
 	Enemy(std::string newName, std::string newContext, int newPriority) :DrawableWithPriority(newName, newContext, newPriority)
 	{}
+	// The enemy's speeds and directions will be set in its constructor. However, they can be modified in update()
 
-	Enemy(std::string newName, std::string newContext, std::string filename, int newPriority) :DrawableWithPriority(newName, newContext, filename, newPriority)
-	{}
-
-	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) :DrawableWithPriority(newName, newContext, filename, x, y, iPosX, iPosY, newPriority)
-	{}
 
 	float getMovementSpeedHorizontal()
 	{
@@ -58,7 +53,7 @@ public:
 		direction = newDirection;
 	}
 
-	//replace movement with an overriden update()
+	//All enemies will have an overriden update() function 
 
 private:
 	float movementSpeedDown;
@@ -67,7 +62,7 @@ private:
 
 };
 
-// Bird only goes striaght down, the most basic of enemies!
+// Bird only goes staright down, the most basic of enemies!
 class Bird : public Enemy
 {
 public:
@@ -81,7 +76,8 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2*(this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x)  +  ,-50);
+		//Bird, along with most other enemies, will spawn off screen
+		setPosition(rand() % (1280 - 2*(this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x)  +  ,-500);
 		clocks.push_back(sf::Clock());
 	}
 
@@ -90,16 +86,17 @@ public:
 	{
 	}
 
-	void update()  // birds will move only straight down for the time being 
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)  // birds will move only straight down for the time being 
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-			sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {  //The bird moves down every 30 milliseconds to ensure smooth movement
+			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
 		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
 			// Update Animation
 			clocks[1].restart();
 		}
+		return Message();
 	}
 
 private:
@@ -107,7 +104,7 @@ private:
 };
 
 // Like the Bird, Eagle will move downwards but it will go down in a sine-like path, hence the need
-// for a angle data member
+// for an angle data member
 class Eagle : public Enemy
 {
 public:
@@ -120,29 +117,21 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -50);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -500);
 		clocks.push_back(sf::Clock());
 	}
 
 	~Eagle()
 	{}
 
-	void update()  // birds will move only straight down for the time being 
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)  // birds will move only straight down for the time being 
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-			sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
-			
-			if (this->getPosition().x < 1)
-			{
-				setPosition( getSizeX(), this->getPosition().y);
-			}
-			else if (this->getPosition().x > 1279)
-			{
-				setPosition(1279 - getSizeX(), this->getPosition().y);
-			}
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			//cos() and sine() are used to make the Eagle move in an oscillating wave
+			move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 
 			angle++;
-			if (angle % 180 == 0)
+			if (angle % 180 == 0)  // THis check ensures the Eagle keeps moving down and doesn't get stuck in an eternal circle loop
 			{
 				setDirection(getDirection()*-1);
 			}
@@ -154,6 +143,7 @@ public:
 			setRotation((getRotation() + 1) *-1);
 			clocks[1].restart();
 		}
+		return Message();
 	}
 
 private:
@@ -173,45 +163,47 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , 50);
+		// Unlike the other birds enemies, the seagull will make a circle loop in an effort to throw off the Player.
+		// Then it will divebomb towards the ground
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , 100);
 		clocks.push_back(sf::Clock());
 	}
 
 	~Seagull() {}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-			if (fullRotation == false)  // we move in a circle until the seagull has gone in a circle
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			if (divebomb == false)  // we move in a circle until the seagull has gone in a circle
 			{
-				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
+				move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
 				setRotation(getRotation() + 1);
 				angle++;
 			}
 			else  // DIVEBOMB!
 			{
-				sf::Sprite::move(0, getMovementSpeedDown());
+				move(0, getMovementSpeedDown());
 			}
 
 			if (angle == 360)  //we set fullRotation to true if angle = 360 ie when the seagull has gone around in a full circle
 			{
-				setMovementSpeedDown(4);
-				fullRotation = true;
+				setMovementSpeedDown(5);
+				divebomb = true;
 			}
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() == 500) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
 			// Update animation
 			clocks[1].restart();
 		}
-
+		return Message();
 	}
 private:
 	int angle = 0;
-	bool fullRotation = false;
+	bool divebomb = false;
 };
 
-//Stereotypically, stars are depicted as traveling in a diagonal manner, coming in from a corner og a page, picture, etc. 
+//Stereotypically, stars are depicted as traveling in a diagonal manner, coming in from a corner of a page, picture, video etc. 
 //hence our ShootingStar will do the same
 class ShootingStar : public Enemy
 {
@@ -222,31 +214,44 @@ public:
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		setMovementSpeedDown(1);
 		setMovementSpeedHorizontal(3);
-		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(-50, -50 + ( rand() % 11 - 10)));
+		// The star should span from either of the top corners
+		// Depending on the corner from which it spans, the star will either travel to the bottom left or bottom right corner
+		if (rand() % 2 == 1)
+		{
+			setPosition(-50, -50 + (rand() % 11 - 10)));
+			setDirection(1);
+		}
+		else
+		{
+			setPosition(1330, -50 + (rand() % 11 - 10)));
+			setDirection(-1);
+		}
 		clocks.push_back(sf::Clock());
 	}
 
 	~ShootingStar() {}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-			if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-				sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+			if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+				move(getDirection()*getMovementSpeedHorizontal(), getMovementSpeedDown());
 				clocks[0].restart();
 			}
-			if (clocks[1].getElapsedTime().asMilliseconds() == 100) {
+			if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
+				// For the ShootingStar's animation, the star should only rotate will moving
 				this->setRotation(getRoation() + 1);
 				clocks[1].restart();
 			}
+			return Message();
 	}
 private:
 
 };
 
 //THe nuke should travel to the middle of the screen and explode once it is at the middle
+// The player will never see it coming!
 class Nuke : public Enemy
 {
 public:
@@ -259,23 +264,25 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , 50);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -500);
 		clocks.push_back(sf::Clock());
 	}
 
 	~Nuke() {}
 
-	void update()
+	//THere really is no need for some sort of animatiion for the nuke
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
 		//go to middle of screen then blow up
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-			sf::Sprite::move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
 		if (this->getPosition() == 600)
 		{
 			// BLOW UP!
 		}
+		return Message();
 	}
 
 private:
@@ -295,26 +302,18 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -50);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -500);
 		clocks.push_back(sf::Clock());
 	}
 
 	~Spaceship() {}
 
 
-	void update()  // birds will move only straight down for the time being 
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
-
-				if (this->getPosition().x < 1)
-				{
-					setPosition(getSizeX(), this->getPosition().y);
-				}
-				else if (this->getPosition().x > 1279)
-				{
-					setPosition(1279 - getSizeX(), this->getPosition().y);
-				}
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+		//The Spaceship will move downwards in a Sine Path, hence the need for cos() and sin()
+				move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 
 				angle++;
 				if (angle % 180 == 0)
@@ -324,14 +323,15 @@ public:
 
 				clocks[0].restart();
 			}
-		if (clocks[1].getElapsedTime().asSeconds() == 3) {
+		if (clocks[1].getElapsedTime().asSeconds() == 2) { //For now, the Spaceship will only shoot at every 2 seconds
 				// Shoot!
 				clocks[1].restart();
 		}
+		return Message();
 	}
 
 private:
-	int angle = 0;
+	int angle = rand() % 360;
 };
 
 // The missile will travel the opposite of how the ShootingStar did;
@@ -343,27 +343,43 @@ public:
 	Missile(std::string newName, std::string newContext) :Enemy("Missile", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		setMovementSpeedDown(1);
+		
 		setMovementSpeedHorizontal(2);
 		setDirection(-1);
 		//set scale and position
 		setScale(0.35, 0.35);
 		setPosition(-50, 770 + (rand() % 11 - 10)));
+
+		// The Missile should span from either of the bottom corners
+		// Depending on the corner from which it spans, the Missile will either travel to the top left or top right corner
+		if (rand() % 2 == 1)
+		{
+			setPosition(-50, 770 + (rand() % 11 - 10));		//Travel to the top right corner
+			setMovementSpeedDown(1);
+			setDirection(1);
+		}
+		else
+		{
+			setPosition(1330, 770 + (rand() % 11 - 10));	//Travel to the top Left corner
+			setMovementSpeedDown(-1);
+			setDirection(-1);
+		}
 		clocks.push_back(sf::Clock());
 	}
 
 	~Missile() {}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-			sf::Sprite::move(getDirection()* getMovementSpeedHorizontal(), getDirection()*getMovementSpeedDown());
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			move(getDirection()* getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() == 100) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
 		// change animation
 			clocks[1].restart();
 		}
+		return Message();
 	}
 private:
 
@@ -376,8 +392,8 @@ public:
 	Football(std::string newName, std::string newContext) :Enemy("Football", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		setMovementSpeedDown(1);
-		setMovementSpeedHorizontal(1);
+		setMovementSpeedDown(4);
+		setMovementSpeedHorizontal(4);
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -388,35 +404,36 @@ public:
 	~Football()
 	{}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
-		sf::Sprite::move(sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedHorizontal(), cos(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
+		//The football should travel a semisphere path on screen
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
+			move(sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedHorizontal(), cos(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
 
 			angle++;
-			if (angle == 181)
-			{
-				//Not sure what to do here
-			}
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() == 500) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
 			//Update Animation 
 			clocks[1].restart();
 		}
+		return Message();
 	}
 private:
 	int angle = 0;
 };
 
+// The way the Mothership works is by passing in the address of the kite, and then the Mothership is able to check periodically where
+// the kite is, and it is able to follow it
+// We shoot beams at the kite every few intervals and then divebomb when we are close enough to the Kite's X coordinate
 class Mothership : public Enemy
 {
 private:
 	int amountShot = 0;
 	bool divebomb = false;
-	Enemy* Target;
+	DrawableWithPriority* Target;
 public:
-	Mothership(std::string newName, std::string newContext, Enemy* newTarget) :Enemy("Mothership", "game", 15)
+	Mothership(std::string newName, std::string newContext, DrawableWithPriority* newTarget) :Enemy("Mothership", "game", 15)
 	{
 		Target = newTarget; //Now we can keep track of where the kite is
 		// use addNewTexture() to add texture to this enemy and add to texture vector
@@ -429,21 +446,29 @@ public:
 		clocks.push_back(sf::Clock());
 	}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {  //Movement
-			if (divebomb && getMovementSpeedDown != 4)
-			{
-				if (abs(this->getPosition().x - Target->getPosition().x) < 10)
-				{
-					setDirection(0);
-					setMovementSpeedDown(4);
-				}
-				clocks[0].restart();
-			}
+		if (clocks[0].getElapsedTime().asSeconds() >= 30) {  //Move every 30 milliseconds
+			move(getDirection()*getMovementSpeedHorizontal(), getMovementSpeedDown());
+			clocks[0].restart();
 		}
 
-		if (clocks[1].getElapsedTime().asSeconds() == 2 && !divebomb) {
+		// Here we check whether to divebomb or to keep following the kite
+		if (clocks[1].getElapsedTime().asSeconds() >= 2 && !divebomb) {
+			//We enter this if statement once we have shot 5 times
+			if (divebomb && getMovementSpeedDown != 4)
+			{
+				//We do the getMovementSpeedDown check so that we dont check once the spaceship is dive bombing
+				// Once we are divebombing, there is no moving horizontally
+				if (abs(this->getPosition().x - Target->getPosition().x) < 10)
+				{
+					//We divebomb as soon as the mothership's X coordinate is 10 away from the kite's X coordinate
+					setDirection(0);
+					setMovementSpeedDown(5);
+				}
+			}
+
+			else {   //Here we check if we are still following the kite
 				if (this->getPosition().x < Target->getPosition().x && getDirection() != 1) //Kite is to right of Mothership
 				{
 					setDirection(1);
@@ -457,7 +482,7 @@ public:
 					setDirection(0);
 				}
 				clocks[1].restart();
-
+			}
 		}
 
 		if (clocks[2].getElapsedTime().asSeconds() == 3 && !divebomb) {
@@ -471,7 +496,7 @@ public:
 				//Maybe look into shootingg instead when ship is really close to kite?
 		}
 
-		if (clocks[3].getElapsedTime().asMilliseconds() == 500) {
+		if (clocks[3].getElapsedTime().asMilliseconds() >= 500) {
 				//Update amnimation
 				clocks[3].restart();
 		}
@@ -485,5 +510,6 @@ public:
 		{
 			setPosition(1279 - getSizeX(), this->getPosition().y);
 		}
+		return Message();
 	}
 }

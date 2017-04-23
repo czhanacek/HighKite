@@ -11,7 +11,8 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
     addNewTexture("imgs/orange.jpg");
     setCurrentTexture(0);
     setScale(0.25, 0.25);
-    setPosition(640, 300);
+    setPosition(640, 400);
+    clocks.push_back(sf::Clock());
 }
 
 KiteObj::~KiteObj()
@@ -21,7 +22,11 @@ KiteObj::~KiteObj()
 
 Message KiteObj::update(sf::Time t, sf::Time y)
 {
-    setPosition(getPosition().x + mXVelocity, 300 - mYVelocity);
+    if(clocks[0].getElapsedTime().asMilliseconds() % 70 == 0){
+        DrawableWithPriority::setRotation(rand() % 6 - 3);
+    }
+    //sf::Transform().rotate(rand() % 6 - 3, getPosition().x + (getSizeX() / 2), getPosition().y + (getSizeY() / 2));
+    setPosition(getPosition().x + mXVelocity, 400 - mYVelocity);
 
     return Message();
 }
@@ -34,23 +39,29 @@ Message KiteObj::react(sf::Event e)
 void KiteObj::receiveMessage(Message msg)
 {
     if(msg.getSender() == "gamewrapper"){
+        if(mXVelocity == 0){
+            clocks[0].restart();
+        }
         if(msg.getContent() == "L pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity < 3){
+
+            if(mXVelocity < 5){
             std::cout << "Velocity increased in POSITIVE x" << std::endl;
-                mXVelocity++;
+                mXVelocity = 5;
             }
         }
         else if(msg.getContent() == "S pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity > -3){
+            if(mXVelocity > -5){
             std::cout << "Velocity increased in NEGATIVE x" << std::endl;
-                mXVelocity--;
+                mXVelocity = -5;
             }
         }
         else if(msg.getContent() == "L released"){
+            mXVelocity = 0;
         }
         else if(msg.getContent() == "S released"){
+            mXVelocity = 0;
         }
     }
     keepInBounds();

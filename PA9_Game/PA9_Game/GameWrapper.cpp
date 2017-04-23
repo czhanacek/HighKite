@@ -55,6 +55,7 @@ GameWrapper::GameWrapper() {
                 if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
                     addMessageToQueue(Message("gamewrapper", "L pressed"));
                     std::cout << "L pressed" << std::endl;
+
                     lCurrentlyPressed = true;
                 }
                 else if(!sCurrentlyPressed && event.key.code == sf::Keyboard::S){
@@ -120,10 +121,7 @@ GameWrapper::GameWrapper() {
         }
         // update textures here
 
-
-
         window->display();
-
     }
 }
 

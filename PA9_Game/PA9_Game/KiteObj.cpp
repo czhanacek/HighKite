@@ -11,17 +11,22 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
     addNewTexture("imgs/orange.jpg");
     setCurrentTexture(0);
     setScale(0.25, 0.25);
-    setPosition(mXPos, mYPos);
+    setPosition(640, 400);
+    clocks.push_back(sf::Clock());
 }
 
 KiteObj::~KiteObj()
 {
-
 }
 
 Message KiteObj::update(sf::Time t, sf::Time y)
 {
-    setPosition(getPosition().x + mXVelocity, 300 - mYVelocity);
+    // This will generate some random rotation on the kite
+    if(clocks[0].getElapsedTime().asMilliseconds() % 70 == 0){
+        DrawableWithPriority::setRotation(rand() % 6 - 3);
+        clocks[0].restart();
+    }
+    setPosition(getPosition().x + mXVelocity, 400 - mYVelocity);
 
     return Message();
 }
@@ -33,34 +38,33 @@ Message KiteObj::react(sf::Event e)
 
 void KiteObj::receiveMessage(Message msg)
 {
-
-
     if(msg.getSender() == "gamewrapper"){
+        if(mXVelocity == 0){
+            clocks[0].restart();
+        }
         if(msg.getContent() == "L pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity < 3){
+
+            if(mXVelocity < 5){
             std::cout << "Velocity increased in POSITIVE x" << std::endl;
-                mXVelocity++;
-            }
-           else{
-                std::cout << "Velocity MAXIMISED" << std::endl;
+                mXVelocity = 5;
             }
         }
         else if(msg.getContent() == "S pressed"){
             // This line will max out the xVelocity
-            if(mXVelocity > -3){
+            if(mXVelocity > -5){
             std::cout << "Velocity increased in NEGATIVE x" << std::endl;
-                mXVelocity--;
-            }
-            else{
-                std::cout << "Velocity MINIMIZED" << std::endl;
+                mXVelocity = -5;
             }
         }
         else if(msg.getContent() == "L released"){
+            mXVelocity = 0;
         }
         else if(msg.getContent() == "S released"){
+            mXVelocity = 0;
         }
     }
+    keepInBounds();
 }
 
 Message KiteObj::click()
@@ -71,4 +75,18 @@ Message KiteObj::click()
 Message KiteObj::unclick()
 {
 
+}
+
+void KiteObj::keepInBounds(){
+    if(getPosition().x < 1){
+        mXVelocity = 0;
+        setPosition(1, getPosition().y);
+        std::cout << "Reached Left edge!" << std::endl;
+    }
+    else if(getPosition().x + getSizeX() > 1279){
+
+        mXVelocity = 0;
+        setPosition(1279 - getSizeX(), getPosition().y);
+        std::cout << "Reached Right edge!" << std::endl;
+    }
 }

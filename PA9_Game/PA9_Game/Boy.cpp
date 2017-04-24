@@ -4,9 +4,9 @@ Boy::Boy(std::string newName, std::string newContext, std::string filename) : Dr
     setPosition(930, 130);
     setScale(0.8, 0.8);
     removeMe = false;
-    addNewTexture("imgs/boy-bigmouth.gif");
-    addNewTexture("imgs/boy-o-mouth.gif");
-    addNewTexture("imgs/boy-smile.gif");
+    addNewTexture("imgs/boy-bigmouth.png");
+    addNewTexture("imgs/boy-o-mouth.png");
+    addNewTexture("imgs/boy-smile.png");
 }
 
 Message Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {

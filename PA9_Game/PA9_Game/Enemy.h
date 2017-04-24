@@ -12,16 +12,24 @@ class Enemy : public DrawableWithPriority
 {
 public:
 	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) : DrawableWithPriority(newName, newContext, filename, x, y, newPriority)
-	{}
+	{
+        setEnemyStatus(true);
+	}
 
 	Enemy(std::string newName, std::string newContext, int newPriority) :DrawableWithPriority(newName, newContext, newPriority)
-	{}
+	{
+        setEnemyStatus(true);
+	}
 
 	Enemy(std::string newName, std::string newContext, std::string filename, int newPriority) :DrawableWithPriority(newName, newContext, filename, newPriority)
-	{}
+	{
+        setEnemyStatus(true);
+	}
 
 	Enemy(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) :DrawableWithPriority(newName, newContext, filename, x, y, iPosX, iPosY, newPriority)
-	{}
+	{
+        setEnemyStatus(true);
+	}
 
 
 	float getMovementSpeedHorizontal()
@@ -114,7 +122,7 @@ public:
 	Eagle(std::string newName, std::string newContext) : Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		addNewTexture("imgs/button.jpg");
+		addNewTexture("imgs/eagle.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(5);
 		setMovementSpeedHorizontal(5);
@@ -150,7 +158,7 @@ public:
 	}
 
 private:
-	int angle = 0;
+	int angle = rand() % 180;
 };
 
 
@@ -161,30 +169,33 @@ public:
 	Seagull(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/seagull.png");
 		setCurrentTexture(0);
-		setMovementSpeedDown(1);
-		setMovementSpeedHorizontal(1);
+		setMovementSpeedDown(5);
+		setMovementSpeedHorizontal(5);
 		setDirection(1);
 		//set scale and position
-		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
+		double prelim = rand() % 50 + 0.15;
+		double seagullSize = (prelim / 100.0);
+		setScale(seagullSize, seagullSize);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
 		clocks.push_back(sf::Clock());
 	}
 
 	~Seagull() {}
 
-	void update()
+	Message update(sf::Time blah1, sf::Time blah2)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
 			if (fullRotation == false)  // we move in a circle until the seagull has gone in a circle
 			{
-				sf::Sprite::move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
+				move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
 				setRotation(getRotation() + 1);
 				angle++;
 			}
 			else  // DIVEBOMB!
 			{
-				sf::Sprite::move(0, getMovementSpeedDown());
+				move(0, getMovementSpeedDown());
 			}
 
 			if (angle == 360)  //we set fullRotation to true if angle = 360 ie when the seagull has gone around in a full circle
@@ -198,10 +209,10 @@ public:
 			// Update animation
 			clocks[1].restart();
 		}
-
+        return Message();
 	}
 private:
-	int angle = 0;
+	int angle = rand() % 360;
 	bool fullRotation = false;
 };
 
@@ -415,18 +426,24 @@ public:
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/button.jpg");
 		setCurrentTexture(0);
-		setMovementSpeedDown(0);
+		setMovementSpeedDown(2);
 		setMovementSpeedHorizontal(2);
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
 		setPosition(-50, 30);
 		clocks.push_back(sf::Clock());
+		clocks.push_back(sf::Clock());
+		clocks.push_back(sf::Clock());
+		clocks.push_back(sf::Clock());
+
+
 	}
 
-	void update()
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
-		if (clocks[0].getElapsedTime().asMilliseconds() == 100) {  //Movement
+	    move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 100) {  //Movement
 			if (divebomb && getMovementSpeedDown() != 4)
 			{
 				if (abs(this->getPosition().x - Target->getPosition().x) < 10)
@@ -438,7 +455,7 @@ public:
 			}
 		}
 
-		if (clocks[1].getElapsedTime().asSeconds() == 2 && !divebomb) {
+		if (clocks[1].getElapsedTime().asSeconds() >= 2 && !divebomb) {
 				if (this->getPosition().x < Target->getPosition().x && getDirection() != 1) //Kite is to right of Mothership
 				{
 					setDirection(1);
@@ -454,21 +471,22 @@ public:
 				clocks[1].restart();
 		}
 
-		if (clocks[2].getElapsedTime().asSeconds() == 3 && !divebomb) {
+		if (clocks[2].getElapsedTime().asSeconds() >= 3 && !divebomb) {
 				//Shoot!
 				amountShot++;
 				if (amountShot >= 5)
 				{
-					divebomb == true;
+				    divebomb = true;
+					setMovementSpeedDown(6);
 				}
 				clocks[2].restart();
 				//Maybe look into shootingg instead when ship is really close to kite?
 		}
 
-		if (clocks[3].getElapsedTime().asMilliseconds() == 500) {
+		if (clocks[3].getElapsedTime().asMilliseconds() >= 500) {
 				//Update amnimation
 				clocks[3].restart();
 		}
-
+        return Message();
 	}
 };

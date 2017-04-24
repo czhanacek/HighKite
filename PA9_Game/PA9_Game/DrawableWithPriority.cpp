@@ -8,6 +8,7 @@
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+    setEnemyStatus(false);
     removeMe = true;
     clocks.push_back(sf::Clock());
 
@@ -96,6 +97,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     name = newName;
     removeMe = true;
     clocks.push_back(sf::Clock());
+    setEnemyStatus(false);
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -148,6 +150,7 @@ std::string DrawableWithPriority::getName(void) {
 // This constructor is useful when you just want to set a base texture for your sprite
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
+    setEnemyStatus(false);
     clocks.push_back(sf::Clock());
     removeMe = true;
     context = newContext;
@@ -163,6 +166,13 @@ Message DrawableWithPriority::unclick() {
     return Message();
 }
 
+bool DrawableWithPriority::isAnEnemy(void) {
+    return isEnemy;
+}
+
+void DrawableWithPriority::setEnemyStatus(bool newEnemyStatus) {
+    isEnemy = newEnemyStatus;
+}
 // returns the current context of the sprite. This ought to match the current context
 // that the game is in.
 std::string DrawableWithPriority::getContext() {
@@ -211,6 +221,7 @@ void DrawableWithPriority::receiveMessage(Message msg) {
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
     context = newContext;
+    setEnemyStatus(false);
     removeMe = true;
     clocks.push_back(sf::Clock());
     sf::Texture * textu = new sf::Texture();

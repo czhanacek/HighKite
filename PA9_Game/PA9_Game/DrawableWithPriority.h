@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <cstdlib>
+#include <typeinfo>
 #include <vector>
 #include <math.h>
 #include <string>
@@ -44,11 +45,13 @@ class DrawableWithPriority : public sf::Sprite {
         int getCurrentSoundIndex(void);
         int getCurrentTextureIndex(void);
         void setCurrentTexture(int index);
+        void setEnemyStatus(bool newEnemyStatus);
+        bool isAnEnemy(void);
 
 
     private:
         int priority;
-
+        bool isEnemy;
         std::string name;
         std::string context;
         int currentSoundIndex;

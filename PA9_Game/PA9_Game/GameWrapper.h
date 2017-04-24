@@ -9,6 +9,7 @@
 #include "Cloud.h"
 #include "KiteObj.h"
 #include "Enemy.h"
+#include <string.h>
 
 
 #include <queue>

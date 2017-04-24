@@ -51,27 +51,47 @@ GameWrapper::GameWrapper() {
             else if(event.type == sf::Event::MouseButtonReleased) {
                 checkForUnclicks();
             }
-            else if(event.type == sf::Event::KeyPressed){
-                if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
-                    addMessageToQueue(Message("gamewrapper", "L pressed"));
-                    std::cout << "L pressed" << std::endl;
 
+            else if(event.type == sf::Event::KeyPressed){
+                Message msg = Message("gamewrapper", "");
+
+                if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
+                    msg.setContent("L pressed");
+                    addMessageToQueue(msg);
+                    std::cout << "L pressed" << std::endl;
                     lCurrentlyPressed = true;
                 }
                 else if(!sCurrentlyPressed && event.key.code == sf::Keyboard::S){
-                    addMessageToQueue(Message("gamewrapper", "S pressed"));
+                    msg.setContent("S pressed");
+                    addMessageToQueue(msg);
                     std::cout << "S pressed" << std::endl;
                     sCurrentlyPressed = true;
                 }
             }
             else if(event.type == sf::Event::KeyReleased){
+                Message msg = Message("gamewrapper", "");
+
                 if(lCurrentlyPressed && event.key.code == sf::Keyboard::L){
-                    addMessageToQueue(Message("gamewrapper", "L released"));
+                    if(sCurrentlyPressed){
+                    msg.setContent("L released but S held");
+                    }
+                    else {
+                    msg.setContent("L released");
+                    }
+
+                    addMessageToQueue(msg);
                     std::cout << "L released" << std::endl;
                     lCurrentlyPressed = false;
                 }
                 else if(sCurrentlyPressed && event.key.code == sf::Keyboard::S){
-                    addMessageToQueue(Message("gamewrapper", "S released"));
+
+                    if(lCurrentlyPressed){
+                    msg.setContent("S released but L held");
+                    }
+                    else {
+                    msg.setContent("S released");
+                    }
+                    addMessageToQueue(msg);
                     std::cout << "S released" << std::endl;
                     sCurrentlyPressed = false;
                 }

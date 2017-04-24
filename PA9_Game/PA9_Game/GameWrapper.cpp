@@ -124,7 +124,7 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 2;
+    int randomNumber = rand() % 3;
     DrawableWithPriority * enemy;
     switch(randomNumber) {
     case 0:
@@ -132,6 +132,9 @@ void GameWrapper::spawnRandomEnemy(void) {
         break;
     case 1:
         enemy = new Seagull("Seagull", getCurrentContext());
+        break;
+    case 2:
+        enemy = new Bird("Bird", getCurrentContext());
         break;
     }
     registerAnimatableSprite(enemy);

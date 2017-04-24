@@ -81,10 +81,18 @@ public:
 	Bird(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		addNewTexture("imgs/button.jpg");
+		addNewTexture("imgs/bird-1.png");
+		addNewTexture("imgs/bird-2.png");
+		addNewTexture("imgs/bird-3.png");
+		addNewTexture("imgs/bird-4.png");
+		addNewTexture("imgs/bird-5.png");
+		addNewTexture("imgs/bird-6.png");
+		addNewTexture("imgs/bird-7.png");
+		addNewTexture("imgs/bird-8.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(3);
-		setMovementSpeedHorizontal(0);
+		setMovementSpeedHorizontal(2 * pow(-1, rand() % 2));
+
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -101,6 +109,7 @@ public:
 	{
 		if (clocks[0].getElapsedTime().asMilliseconds() >= 20) {
 			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
+			setCurrentTexture(getCurrentTextureIndex() + 1);
 			clocks[0].restart();
 		}
 		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
@@ -123,6 +132,7 @@ public:
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/eagle.png");
+		addNewTexture("imgs/eagle-flipped.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(5);
 		setMovementSpeedHorizontal(5);
@@ -140,16 +150,16 @@ public:
 	{
 		if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
 			move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown() * getDirection());
-
 			angle++;
 			if (angle % 180 == 0)
 			{
 				setDirection(getDirection()*-1);
+				setCurrentTexture(getCurrentTextureIndex() + 1);
 			}
 
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
 			// Update Animation
 			setRotation((getRotation() + 1) *-1);
 			clocks[1].restart();
@@ -170,12 +180,13 @@ public:
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/seagull.png");
+		addNewTexture("imgs/seagull-flipped.png");
 		setCurrentTexture(0);
-		setMovementSpeedDown(5);
+		setMovementSpeedDown(7);
 		setMovementSpeedHorizontal(5);
 		setDirection(1);
 		//set scale and position
-		double prelim = rand() % 50 + 0.15;
+		double prelim = rand() % 50 + 35;
 		double seagullSize = (prelim / 100.0);
 		setScale(seagullSize, seagullSize);
 		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
@@ -191,28 +202,33 @@ public:
 			{
 				move(cos(angle * 3.14159265358979323846 / 180) * getMovementSpeedHorizontal(), sin(angle * 3.14159265358979323846 / 180)*getMovementSpeedDown());
 				setRotation(getRotation() + 1);
+
 				angle++;
 			}
 			else  // DIVEBOMB!
 			{
 				move(0, getMovementSpeedDown());
 			}
+            if(angle > 180) {
+                setCurrentTexture(1);
 
+            }
 			if (angle == 360)  //we set fullRotation to true if angle = 360 ie when the seagull has gone around in a full circle
 			{
 				setMovementSpeedDown(4);
+
 				fullRotation = true;
 			}
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() == 500) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
 			// Update animation
 			clocks[1].restart();
 		}
         return Message();
 	}
 private:
-	int angle = rand() % 360;
+	int angle = 0;
 	bool fullRotation = false;
 };
 

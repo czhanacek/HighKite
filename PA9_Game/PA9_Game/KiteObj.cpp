@@ -48,6 +48,9 @@ void KiteObj::receiveMessage(Message msg)
                 mXVelocity = 5;
             }
         }
+        else if(msg.getContent() == "L pressed but S held"){
+
+        }
         else if(msg.getContent() == "S pressed"){
             // This line will max out the xVelocity
             if(mXVelocity > -5){
@@ -55,11 +58,20 @@ void KiteObj::receiveMessage(Message msg)
                 mXVelocity = -5;
             }
         }
+        else if(msg.getContent() == "S pressed but L held"){
+
+        }
         else if(msg.getContent() == "L released"){
             mXVelocity = 0;
         }
+        else if(msg.getContent() == "L released but S held"){
+
+        }
         else if(msg.getContent() == "S released"){
             mXVelocity = 0;
+        }
+        else if(msg.getContent() == "S released but L held"){
+
         }
     }
     keepInBounds();

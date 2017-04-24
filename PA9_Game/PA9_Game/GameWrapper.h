@@ -10,6 +10,7 @@
 #include "KiteObj.h"
 #include "Enemy.h"
 #include "Collision.h"
+#include <string.h>
 
 #include <queue>
 class GameWrapper

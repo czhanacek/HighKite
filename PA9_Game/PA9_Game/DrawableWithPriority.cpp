@@ -9,6 +9,9 @@
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
     setEnemyStatus(false);
+    numberOfTextureSets = 1;
+    currentFrame = 0;
+    textureOffset = 0;
     removeMe = true;
     clocks.push_back(sf::Clock());
 
@@ -95,6 +98,9 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
+    textureOffset = 0;
+    numberOfTextureSets = 1;
+    currentFrame = 0;
     removeMe = true;
     clocks.push_back(sf::Clock());
     setEnemyStatus(false);
@@ -151,6 +157,9 @@ std::string DrawableWithPriority::getName(void) {
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
     setEnemyStatus(false);
+    currentFrame = 0;
+    textureOffset = 0;
+    numberOfTextureSets = 1;
     clocks.push_back(sf::Clock());
     removeMe = true;
     context = newContext;
@@ -202,13 +211,12 @@ int DrawableWithPriority::getCurrentTextureIndex(void) {
  */
 
 void DrawableWithPriority::setCurrentTexture(int index) {
-    if(index < 0) {
-        index = spriteTextures.size() - 1;
-    } else if(index > spriteTextures.size() - 1) {
-        index = 0;
+    if(spriteTextures.size() - 1 > 0) {
+        index = index % ((int)spriteTextures.size());
     }
     setTexture(*(spriteTextures[index]));
     currentTextureIndex = index;
+
 }
 
 
@@ -220,7 +228,10 @@ void DrawableWithPriority::receiveMessage(Message msg) {
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
+    currentFrame = 0;
+    numberOfTextureSets = 1;
     context = newContext;
+    textureOffset = 0;
     setEnemyStatus(false);
     removeMe = true;
     clocks.push_back(sf::Clock());

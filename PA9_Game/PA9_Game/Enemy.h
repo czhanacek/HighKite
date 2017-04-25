@@ -82,21 +82,30 @@ public:
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/bird-1.png");
+		addNewTexture("imgs/bird-1-flipped.png");
 		addNewTexture("imgs/bird-2.png");
+		addNewTexture("imgs/bird-2-flipped.png");
 		addNewTexture("imgs/bird-3.png");
+		addNewTexture("imgs/bird-3-flipped.png");
 		addNewTexture("imgs/bird-4.png");
+		addNewTexture("imgs/bird-4-flipped.png");
 		addNewTexture("imgs/bird-5.png");
+		addNewTexture("imgs/bird-5-flipped.png");
 		addNewTexture("imgs/bird-6.png");
+		addNewTexture("imgs/bird-6-flipped.png");
 		addNewTexture("imgs/bird-7.png");
+		addNewTexture("imgs/bird-7-flipped.png");
 		addNewTexture("imgs/bird-8.png");
+		addNewTexture("imgs/bird-8-flipped.png");
+		numberOfTextureSets = 2;
 		setCurrentTexture(0);
 		setMovementSpeedDown(3);
-		setMovementSpeedHorizontal(2 * pow(-1, rand() % 2));
+		setMovementSpeedHorizontal(4 * pow(-1, rand() % 3));
 
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2*(this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		setPosition(-1 * rand() % 400, -500);
 		//setPosition(100, 100);
 		clocks.push_back(sf::Clock());
 	}
@@ -109,7 +118,16 @@ public:
 	{
 		if (clocks[0].getElapsedTime().asMilliseconds() >= 20) {
 			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
-			setCurrentTexture(getCurrentTextureIndex() + 1);
+			currentFrame++;
+			if(getMovementSpeedHorizontal() > 0) {
+			    textureOffset = 0;
+
+			}
+			else {
+                textureOffset = 1;
+			}
+			setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
+			//setCurrentTexture(getCurrentTextureIndex() + 1);
 			clocks[0].restart();
 		}
 		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {

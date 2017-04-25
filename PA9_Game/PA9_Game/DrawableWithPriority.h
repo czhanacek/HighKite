@@ -39,6 +39,9 @@ class DrawableWithPriority : public sf::Sprite {
         //int32_t millisecondsSinceLastUpdate;
         std::vector<sf::Clock> clocks;
         bool removeMe;
+        int textureOffset;
+        int currentFrame;
+        int numberOfTextureSets;
         int addNewTexture(std::string filename);
         int addNewSound(std::string filename);
         void playSound(int index);

@@ -124,7 +124,7 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 3;
+    int randomNumber = rand() % 5;
     DrawableWithPriority * enemy;
     switch(randomNumber) {
     case 0:
@@ -134,6 +134,8 @@ void GameWrapper::spawnRandomEnemy(void) {
         enemy = new Seagull("Seagull", getCurrentContext());
         break;
     case 2:
+    case 3:
+    case 4:
         enemy = new Bird("Bird", getCurrentContext());
         break;
     }
@@ -236,6 +238,7 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
         for(int i = unremovalableException; i < animates.size();) {
             if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
                 std::cout << "Erased " << animates[i]->getName() << " from animates\n";
+                delete animates[i];
                 animates.erase(animates.begin() + i);
             }
             else if(!animates[i]->removeMe) {
@@ -251,13 +254,13 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
         for(int x = unremovalableException; x < reacts.size();) {
             if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
                 std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
+                delete reacts[x];
                 reacts.erase(reacts.begin() + x);
             }
             if(!reacts[x]->removeMe) {
                 unremovalableException++;
                 reacts[x]->setContext(getCurrentContext());
                 x = unremovalableException;
-
             }
         }
     }
@@ -338,7 +341,12 @@ void GameWrapper::setCurrentContext(std::string newCurrentContext) {
 }
 
 void GameWrapper::forceRemoveAllSprites(void) {
-
+    for(int i = 0; i < animates.size(); i++) {
+        delete animates[i];
+    }
+//    for(int i = 0; i < reacts.size(); i++) {
+//        delete reacts[i];
+//    }
     animates.erase(animates.begin(), animates.end());
     reacts.erase(reacts.begin(), reacts.end());
 }
@@ -347,7 +355,7 @@ void GameWrapper::forceRemoveAllSprites(void) {
 void GameWrapper::makeMainMenuBackground(void) {
     std::cout << "Making main menu\n";
     forceRemoveAllSprites();
-    removeSpritesBelongingToContext("game");
+    //removeSpritesBelongingToContext("game");
     setCurrentContext("mainmenu");
 
     Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.png");

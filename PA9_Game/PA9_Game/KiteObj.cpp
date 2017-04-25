@@ -6,9 +6,13 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
     mXVelocity = 0;
     mYVelocity = 0;
     mAngle = 0.0;
-    addNewTexture("imgs/orange.jpg");
+    addNewTexture("imgs/kite1.png");
+    addNewTexture("imgs/kite2.png");
+    addNewTexture("imgs/kite3.png");
+    addNewTexture("imgs/kite4.png");
+    addNewTexture("imgs/kite5.png");
     setCurrentTexture(0);
-    setScale(0.25, 0.25);
+    setScale(0.20, 0.20);
     setPosition(640, 400);
     clocks.push_back(sf::Clock());
 }
@@ -20,9 +24,11 @@ KiteObj::~KiteObj()
 Message KiteObj::update(sf::Time t, sf::Time y)
 {
     // This will generate some random rotation on the kite
-    if(clocks[0].getElapsedTime().asMilliseconds() % 70 == 0){
-        DrawableWithPriority::setRotation(rand() % 6 - 3 + mXVelocity);
+    if(clocks[0].getElapsedTime().asMilliseconds() % 60 == 0){
         clocks[0].restart();
+        setCurrentTexture(getCurrentTextureIndex() + rand() % spriteTextures.size());
+        DrawableWithPriority::setRotation(rand() % 6 - 3 + mXVelocity);
+
     }
     setPosition(getPosition().x + mXVelocity, 400 - mYVelocity);
 

@@ -124,6 +124,18 @@ Message DrawableWithPriority::update(sf::Time totalElapsed, sf::Time sinceLastUp
 
 // Just a default implementation for react
 Message DrawableWithPriority::react(sf::Event e) {
+
+    // Some example code to demonstrate the functionality of this function ;)
+    if(e.type == sf::Event::KeyPressed) {
+        if(e.key.code == sf::Keyboard::L && getPosition().x < 1280) {
+            setPosition(getPosition().x + 10, getPosition().y);
+
+        }
+		if (e.key.code == sf::Keyboard::S && getPosition().x > 0) {
+			setPosition(getPosition().x, getPosition().y + 10);
+
+		}
+    }
     return Message();
 
 }

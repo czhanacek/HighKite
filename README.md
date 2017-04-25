@@ -4,7 +4,24 @@ Peter Brennan
 Stacia Lesser
 Charlie Hanacek
 
-This is the final project for CptS 122 - Advanced Data Structures at Washington State University
+
+Sources for the images we got online:
+
+
+
+
+
+
+
+
+Music: la femme d'argent by Air
+
+
+
+
+
+
+This is the final project for CptS 122 - Data Structures at Washington State University
 
 Git SOS:
 

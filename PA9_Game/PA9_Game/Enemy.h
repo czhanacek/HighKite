@@ -52,6 +52,8 @@ public:
 
 	}
 
+
+
 	Message react(sf::Event e){
         return Message();
 	}
@@ -62,6 +64,10 @@ public:
 
 	Message unclick(void) {
         return Message();
+	}
+
+	Message update(sf::Time t, sf::Time y) {
+
 	}
 
 	//All enemies will have an overriden update() function
@@ -103,12 +109,19 @@ public:
 		numberOfTextureSets = 2;
 		setCurrentTexture(0);
 		setMovementSpeedDown(3);
-		setMovementSpeedHorizontal(4 * pow(-1, rand() % 3));
+		if(rand() % 2 == 1) {
+            setMovementSpeedHorizontal(-4);
+            std::cout << "bird generated\n";
+		}
+		else {
+            setMovementSpeedHorizontal(4);
+		}
 
-		setDirection(1);
+
+		setDirection(-1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(-1 * rand() % 400, -500);
+		setPosition(rand() % 400 + 500, -50);
 		//setPosition(100, 100);
 
 		clocks.push_back(sf::Clock());
@@ -161,7 +174,7 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
 
 		clocks.push_back(sf::Clock());
 	}
@@ -215,7 +228,7 @@ public:
 		double prelim = rand() % 50 + 35;
 		double seagullSize = (prelim / 100.0);
 		setScale(seagullSize, seagullSize);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
 
 		clocks.push_back(sf::Clock());
 	}

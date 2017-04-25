@@ -68,6 +68,7 @@ public:
 
 	Message update(sf::Time t, sf::Time y) {
 
+		return Message();
 	}
 
 	//All enemies will have an overriden update() function

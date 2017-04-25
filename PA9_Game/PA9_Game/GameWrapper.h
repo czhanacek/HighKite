@@ -11,6 +11,8 @@
 #include "Enemy.h"
 #include "Collision.h"
 #include "Instructions.h"
+#include "ScoreDisplay.h"
+#include "ScoreTracker.h"
 #include <string.h>
 
 #include <queue>

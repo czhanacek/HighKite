@@ -101,12 +101,12 @@ void KiteObj::receiveMessage(Message msg)
 
 Message KiteObj::click()
 {
-
+	return Message();
 }
 
 Message KiteObj::unclick()
 {
-
+	return Message();
 }
 
 void KiteObj::keepInBounds(){

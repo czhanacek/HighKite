@@ -4,6 +4,7 @@
 
 Background::Background(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int priority) : DrawableWithPriority(newName, newContext, filename, x, y, iPosX, iPosY, priority) {
     std::cout << "I'm running!" << std::endl;
+	//setCurrentTexture(0);
 }
 
 void Background::slideUpFirstTime(std::string newBackgroundFile) {

@@ -118,7 +118,7 @@ GameWrapper::GameWrapper() {
             registerReactableSprite(lef);
         }
 
-        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 20) {
+        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 10) {
             spawnRandomEnemy();
         }
 
@@ -216,6 +216,14 @@ GameWrapper::~GameWrapper() {
 }
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
+
+
+    if(msg.getSender() == "showInstructions" && msg.getContent() == "unclicked") {
+        showInstructions();
+    }
+    if(msg.getSender() == "instructions" && msg.getContent() == "unclicked") {
+        removeSpritesByName("instructions");
+    }
     if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
         // Switch to different if statement once the Play Game button is created.
         startGame();
@@ -225,10 +233,40 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
     }
     if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
         makeMainMenuBackground();
-
     }
 }
 
+void GameWrapper::removeSpritesByName(std::string theName) {
+    for(int i = 0; i < animates.size(); i++) {
+        if(animates[i]->getName() == theName) {
+            bool foundMatch = false;
+            for(int x = 0; x < reacts.size(); x++) {
+                if(animates[i] == reacts[x]) {
+                    delete animates[i];
+                    foundMatch = true;
+                    animates.erase(animates.begin() + i);
+                    reacts.erase(reacts.begin() + x);
+                    //x = 0;
+                    //i = 0;
+                }
+            }
+            if(!foundMatch) {
+                delete animates[i];
+                animates.erase(animates.begin() + i);
+                //i = 0;
+            }
+        }
+    }
+}
+
+
+void GameWrapper::showInstructions(void) {
+    //setCurrentContext("instructions");
+    DrawableWithPriority * instructionsScreen = new Instructions("instructions", getCurrentContext(), window->getSize().x, window->getSize().y);
+    registerAnimatableSprite(instructionsScreen);
+    registerReactableSprite(instructionsScreen);
+
+}
 
 // Sprites at the end of the list will be rendered last
 // Therefore, sprites with a lower number will be rendered first.
@@ -254,36 +292,60 @@ void GameWrapper::sortAnimatorsByPriority(void) {
 
 void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
     int unremovalableException = 0;
-    if(animates.size() > 0) {
-        for(int i = unremovalableException; i < animates.size();) {
-            if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
-                std::cout << "Erased " << animates[i]->getName() << " from animates\n";
+//    if(animates.size() > 0) {
+//        for(int i = unremovalableException; i < animates.size();) {
+//            if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
+//                std::cout << "Erased " << animates[i]->getName() << " from animates\n";
+//                delete animates[i];
+//                animates.erase(animates.begin() + i);
+//            }
+//            else if(!animates[i]->removeMe) {
+//                unremovalableException++;
+//                animates[i]->setContext(getCurrentContext());
+//                i = unremovalableException;
+//            }
+//        }
+//    }
+    for(int i = unremovalableException; i < animates.size();) {
+        if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
+            bool foundMatch = false;
+            for(int x = 0; x < reacts.size(); x++) {
+                if(animates[i] == reacts[x]) {
+                    foundMatch = true;
+                    delete animates[i];
+                    animates.erase(animates.begin() + i);
+                    reacts.erase(reacts.begin() + x);
+                    //x = unremovalableException;
+                    i = unremovalableException;
+                }
+            }
+            if(!foundMatch) {
                 delete animates[i];
                 animates.erase(animates.begin() + i);
-            }
-            else if(!animates[i]->removeMe) {
-                unremovalableException++;
-                animates[i]->setContext(getCurrentContext());
                 i = unremovalableException;
             }
         }
-    }
-
-    unremovalableException = 0;
-    if(reacts.size() > 0) {
-        for(int x = unremovalableException; x < reacts.size();) {
-            if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
-                std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
-                delete reacts[x];
-                reacts.erase(reacts.begin() + x);
-            }
-            if(!reacts[x]->removeMe) {
-                unremovalableException++;
-                reacts[x]->setContext(getCurrentContext());
-                x = unremovalableException;
-            }
+        else {
+            unremovalableException++;
+            animates[i]->setContext(getCurrentContext());
+            i = unremovalableException;
         }
     }
+//    unremovalableException = 0;
+//    if(reacts.size() > 0) {
+//        for(int x = unremovalableException; x < reacts.size();) {
+//            if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
+//                std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
+//                //delete reacts[x];
+//                reacts.erase(reacts.begin() + x);
+//            }
+//            if(!reacts[x]->removeMe) {
+//                unremovalableException++;
+//                reacts[x]->setContext(getCurrentContext());
+//                x = unremovalableException;
+//            }
+//        }
+//    }
 }
 
 
@@ -295,7 +357,7 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
 
 
 void GameWrapper::checkForClicks(void) {
-
+    int reactsHighestPriorityIndex = -1;
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
@@ -304,14 +366,24 @@ void GameWrapper::checkForClicks(void) {
                 && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
+            if(reactsHighestPriorityIndex > -1 && reacts[reactsHighestPriorityIndex]->getPriority() < reacts[i]->getPriority()) {
+                reactsHighestPriorityIndex = i;
+            }
+            else if (reactsHighestPriorityIndex == -1) {
+                reactsHighestPriorityIndex = i;
+            }
 
-            addMessageToQueue(reacts[i]->click());
         }
+    }
+    if(reactsHighestPriorityIndex > -1) {
+        addMessageToQueue(reacts[reactsHighestPriorityIndex]->click());
     }
 }
 
 
+
 void GameWrapper::checkForUnclicks(void) {
+    int reactsHighestPriorityIndex = -1;
     sf::Vector2f mouse = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     for(int i = 0; i < reacts.size(); i++) {
         std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
@@ -320,9 +392,18 @@ void GameWrapper::checkForUnclicks(void) {
                 && mouse.y >= reacts[i]->getPosition().y && mouse.y <= reacts[i]->getPosition().y + (reacts[i]->getSizeY())) {
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().x  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeX()))  << ")\n";
             std::cout << reacts[i]->getName() << "(" << reacts[i]->getPosition().y  << " - " << (reacts[i]->getPosition().x + (reacts[i]->getSizeY()))  << ")\n";
+            if(reactsHighestPriorityIndex > -1 && reacts[reactsHighestPriorityIndex]->getPriority() < reacts[i]->getPriority()) {
+                reactsHighestPriorityIndex = i;
+            }
+            else if (reactsHighestPriorityIndex == -1) {
+                reactsHighestPriorityIndex = i;
+            }
 
-            addMessageToQueue(reacts[i]->unclick());
         }
+    }
+    if(reactsHighestPriorityIndex > -1) {
+        std::cout << reacts[reactsHighestPriorityIndex]->getName()  << " got unclicked\n";
+        addMessageToQueue(reacts[reactsHighestPriorityIndex]->unclick());
     }
 }
 void GameWrapper::messageBlaster(void) {
@@ -341,7 +422,7 @@ void GameWrapper::messageBlaster(void) {
 void GameWrapper::addMessageToQueue(Message msg) {
 
     if(!msg.isEmpty()) {
-        std::cout << "New message from " << msg.getSender() << ": " << msg.getContent() << std::endl;
+        //std::cout << "New message from " << msg.getSender() << ": " << msg.getContent() << std::endl;
         messageQueue.push(msg);
     }
 }
@@ -357,6 +438,9 @@ void GameWrapper::setCurrentContext(std::string newCurrentContext) {
     // everything in reacts is guaranteed to be in reacts
     for(int i = 0; i < animates.size(); i++) {
         animates[i]->setContext(getCurrentContext());
+    }
+    for(int i = 0; i < reacts.size(); i++) {
+        reacts[i]->setContext(getCurrentContext());
     }
 }
 
@@ -412,44 +496,47 @@ void GameWrapper::startGame(void) {
     gamestart.restart();
     gamestarted = true;
     removeSpritesBelongingToContext("mainmenu");
-    setCurrentContext("game");
+    if(getCurrentContext() == "mainmenu") {
+        setCurrentContext("game");
 
-    //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
-    DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
-            window->getSize().y, 0, 0, 2);
+        //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
+        DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
+                window->getSize().y, 0, 0, 2);
 
-    DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
-            window->getSize().y, 0, -720, 2);
-    DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
-            window->getSize().y, 0, 0, 3);
-    DrawableWithPriority * kite = new KiteObj();
+        DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
+                window->getSize().y, 0, -720, 2);
+        DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
+                window->getSize().y, 0, 0, 3);
+        DrawableWithPriority * kite = new KiteObj();
 
-    registerAnimatableSprite(cloud1Background);
-    registerAnimatableSprite(cloud2Background);
-    registerAnimatableSprite(moveGrass);
-    registerAnimatableSprite(kite);
-    registerReactableSprite(kite);
+        registerAnimatableSprite(cloud1Background);
+        registerAnimatableSprite(cloud2Background);
+        registerAnimatableSprite(moveGrass);
+        registerAnimatableSprite(kite);
+        registerReactableSprite(kite);
+    }
 
 }
 
 void GameWrapper::cleanUpSpritesFarOffScreen(void) {
     for(int i = 0; i < animates.size();) {
-        if(animates[i]->getPosition().y > 1400 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
-            std::cout << "Erased " << animates[i]->getName() << " from animates because it was too far off screen\n";
-            animates.erase(animates.begin() + i);
-            i = 0;
+        if(animates[i]->getPosition().y > 2000 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
+            bool foundMatch = false;
+            for(int x = 0; x < reacts.size(); x++) {
+                if(animates[i] == reacts[x]) {
+                    delete animates[i];
+                    foundMatch = true;
+                    animates.erase(animates.begin() + i);
+                    reacts.erase(reacts.begin() + x);
+                }
+            }
+            if(!foundMatch) {
+                delete animates[i];
+                animates.erase(animates.begin() + i);
+
+            }
         }
         else {
-            i++;
-        }
-    }
-    for(int i = 0; i < reacts.size();) {
-        if(reacts[i]->getPosition().y > 1400 || reacts[i]->getPosition().x > 2100 || reacts[i]->getPosition().x < -2100 || reacts[i]->getPosition().y < -1400) {
-            std::cout << "Erased " << reacts[i]->getName() << " from reacts because it was too far off screen\n";
-            reacts.erase(reacts.begin() + i);
-            i = 0;
-        }
-         else {
             i++;
         }
     }

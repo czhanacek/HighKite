@@ -51,7 +51,7 @@ Message Cloud::react(sf::Event e) {
 }
 
 void Cloud::receiveMessage(Message msg) {
-    if(msg.getSender() == "playGame" && msg.getContent() == "clicked") {
+    if(msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
         moving = true;
         playSound(0);
         movingOut = true;

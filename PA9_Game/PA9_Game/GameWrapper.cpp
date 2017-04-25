@@ -1,13 +1,36 @@
 #include "GameWrapper.h"
 
+
+/* Current message senders and their messages
+    - gamewrapper
+        - context changed
+    - cloud
+        - blowing
+        - not blowing
+    - playGame (it's a button)
+        - clicked
+        - unclicked
+    - quit
+        - clicked
+        - unclicked
+*/
+
 GameWrapper::GameWrapper() {
     srand(time(NULL)); // Seed the random number generator so that we get new stuff every time we start
-    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(); // set up three clocks. Right now, we only use
+
+    // start the music now
+    sf::Music music;
+    music.openFromFile("sounds/lafemme.ogg");
+    music.play();
+    gamestart = sf::Clock();
+    gamestarted = false;
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(), elapsed2 = sf::Clock(); // set up three clocks. Right now, we only use
     // elapsed,
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     //window->setFramerateLimit(30);
     makeMainMenuBackground();
-    int leafInterval = rand() % 2500;
+    int leafInterval = rand() % 2500 + 500;
+    bool sCurrentlyPressed = false, lCurrentlyPressed = false;
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -24,16 +47,47 @@ GameWrapper::GameWrapper() {
 
             if (event.type == sf::Event::Closed)
                 window->close();
-            if(event.type == sf::Event::MouseButtonPressed) {
+            else if(event.type == sf::Event::MouseButtonPressed) {
                 checkForClicks();
             }
-            if(event.type == sf::Event::MouseButtonReleased) {
+            else if(event.type == sf::Event::MouseButtonReleased) {
                 checkForUnclicks();
             }
+            else if(event.type == sf::Event::KeyPressed){
+                if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
+                    addMessageToQueue(Message("gamewrapper", "L pressed"));
+                    std::cout << "L pressed" << std::endl;
+
+                    lCurrentlyPressed = true;
+                }
+                else if(!sCurrentlyPressed && event.key.code == sf::Keyboard::S){
+                    addMessageToQueue(Message("gamewrapper", "S pressed"));
+                    std::cout << "S pressed" << std::endl;
+                    sCurrentlyPressed = true;
+                }
+            }
+            else if(event.type == sf::Event::KeyReleased){
+                if(lCurrentlyPressed && event.key.code == sf::Keyboard::L){
+                    addMessageToQueue(Message("gamewrapper", "L released"));
+                    std::cout << "L released" << std::endl;
+                    lCurrentlyPressed = false;
+                }
+                else if(sCurrentlyPressed && event.key.code == sf::Keyboard::S){
+                    addMessageToQueue(Message("gamewrapper", "S released"));
+                    std::cout << "S released" << std::endl;
+                    sCurrentlyPressed = false;
+                }
+            }
+
             for(int i = 0; i < reacts.size(); i++) {
                 //std::cout << "Reacting to events\n";
                 addMessageToQueue(reacts[i]->react(event));
             }
+            if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Q) {
+                exit(0);
+            }
+
+
         }
 
         if(elapsed.getElapsedTime().asMilliseconds() >= leafInterval  && getCurrentContext() == "mainmenu") {
@@ -42,31 +96,51 @@ GameWrapper::GameWrapper() {
             Leaf * lef = new Leaf("mainmenu");
             registerAnimatableSprite(lef);
             registerReactableSprite(lef);
+        }
 
+        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 20) {
+            spawnRandomEnemy();
         }
 
         if(clk2.getElapsedTime().asSeconds() >= 0.5) {
             clk2.restart();
             cleanUpSpritesFarOffScreen();
         }
-
+        checkForCollisionsWithKite();
         messageBlaster(); // Sends messages to all the reactables
         window->clear();
         sortAnimatorsByPriority();
 
-
+        for(int i = 0; i < animates.size(); i++) {
+            addMessageToQueue(animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime()));
+        }
         for(int i = 0; i < animates.size(); i++) {
             window->draw(*(animates[i]));
         }
         // update textures here
-        for(int i = 0; i < animates.size(); i++) {
-            addMessageToQueue(animates[i]->update(elapsed.getElapsedTime(), clk1.getElapsedTime()));
-        }
-
 
         window->display();
-
     }
+}
+
+void GameWrapper::spawnRandomEnemy(void) {
+    int randomNumber = rand() % 5;
+    DrawableWithPriority * enemy;
+    switch(randomNumber) {
+    case 0:
+        enemy = new Eagle("Eagle", getCurrentContext());
+        break;
+    case 1:
+        enemy = new Seagull("Seagull", getCurrentContext());
+        break;
+    case 2:
+    case 3:
+    case 4:
+        enemy = new Bird("Bird", getCurrentContext());
+        break;
+    }
+    registerAnimatableSprite(enemy);
+    registerReactableSprite(enemy);
 }
 
 void GameWrapper::registerAnimatableSprite(DrawableWithPriority * newSprite) {
@@ -78,6 +152,42 @@ void GameWrapper::registerReactableSprite(DrawableWithPriority * newSprite) {
     reacts.push_back(newSprite);
 }
 
+int GameWrapper::getIndexByName(std::string thename) {
+    int foundIndex = -1;
+    for(int i = 0; i < animates.size(); i++) {
+        if(animates[i]->getName() == thename) {
+            foundIndex = i;
+        }
+    }
+    return foundIndex;
+}
+
+
+void GameWrapper::checkForCollisionsWithKite(void) {
+    int indexOfKite = getIndexByName("Kite");
+    if(indexOfKite != -1) {
+        //std::cout << "Found kite index\n";
+        for(int i = 0; i < animates.size(); i++) {
+            if(animates[i]->isAnEnemy()) {
+                if(Collision::PixelPerfectTest(*(animates[i]), *(animates[indexOfKite]))) {
+                    std::cout << "Kite collided with " << animates[i]->getName() << std::endl;
+                    addMessageToQueue(Message(animates[i]->getName(), "collided"));
+                    addMessageToQueue(Message(animates[indexOfKite]->getName(), "collided"));
+                }
+/*                 if(animates[i]->getGlobalBounds().intersects(animates[indexOfKite]->getGlobalBounds())) {
+ *
+ *
+ *                 }
+ */
+            }
+            //std::cout << "(" << mouse.x << ", " << mouse.y << ")\n";
+
+        }
+
+    }
+
+
+}
 
 GameWrapper::~GameWrapper() {
     for(int i = 0; i < animates.size(); i++) {
@@ -87,15 +197,15 @@ GameWrapper::~GameWrapper() {
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
     if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
-
         // Switch to different if statement once the Play Game button is created.
-        currentContext = "game";
-        removeSpritesBelongingToContext("mainmenu");
-
         startGame();
     }
     if(msg.getSender() == "quit" && msg.getContent() == "unclicked") {
         exit(0);
+    }
+    if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
+        makeMainMenuBackground();
+
     }
 }
 
@@ -124,32 +234,39 @@ void GameWrapper::sortAnimatorsByPriority(void) {
 
 void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
     int unremovalableException = 0;
-    for(int i = unremovalableException; i < animates.size();) {
-
-        if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
-            std::cout << "Erased " << animates[i]->getName() << " from animates\n";
-            animates.erase(animates.begin() + i);
-        }
-        else if(!animates[i]->removeMe) {
-            unremovalableException++;
-            animates[i]->setContext(getCurrentContext());
-            i = unremovalableException;
+    if(animates.size() > 0) {
+        for(int i = unremovalableException; i < animates.size();) {
+            if(animates[i]->getContext() == theContext && animates[i]->removeMe) {
+                std::cout << "Erased " << animates[i]->getName() << " from animates\n";
+                delete animates[i];
+                animates.erase(animates.begin() + i);
+            }
+            else if(!animates[i]->removeMe) {
+                unremovalableException++;
+                animates[i]->setContext(getCurrentContext());
+                i = unremovalableException;
+            }
         }
     }
-    unremovalableException = 0;
-    for(int x = unremovalableException; x < reacts.size();) {
-        if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
-            std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
-            reacts.erase(reacts.begin() + x);
-        }
-        if(!reacts[x]->removeMe) {
-            unremovalableException++;
-            reacts[x]->setContext(getCurrentContext());
-            x = unremovalableException;
 
+    unremovalableException = 0;
+    if(reacts.size() > 0) {
+        for(int x = unremovalableException; x < reacts.size();) {
+            if(reacts[x]->getContext() == theContext && reacts[x]->removeMe) {
+                std::cout << "Erased " << reacts[x]->getName() << " from reacts\n";
+                delete reacts[x];
+                reacts.erase(reacts.begin() + x);
+            }
+            if(!reacts[x]->removeMe) {
+                unremovalableException++;
+                reacts[x]->setContext(getCurrentContext());
+                x = unremovalableException;
+            }
         }
     }
 }
+
+
 
 
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
@@ -190,7 +307,7 @@ void GameWrapper::checkForUnclicks(void) {
 }
 void GameWrapper::messageBlaster(void) {
 
-    if(!messageQueue.empty()) {
+    while(!messageQueue.empty()) {
         Message currentMessage = messageQueue.front();
 
         messageQueue.pop();
@@ -202,7 +319,9 @@ void GameWrapper::messageBlaster(void) {
 }
 
 void GameWrapper::addMessageToQueue(Message msg) {
+
     if(!msg.isEmpty()) {
+        std::cout << "New message from " << msg.getSender() << ": " << msg.getContent() << std::endl;
         messageQueue.push(msg);
     }
 }
@@ -212,11 +331,31 @@ std::string GameWrapper::getCurrentContext(void) {
 }
 
 void GameWrapper::setCurrentContext(std::string newCurrentContext) {
+
     currentContext = newCurrentContext;
     addMessageToQueue(Message("gamewrapper", "context changed"));
+    // everything in reacts is guaranteed to be in reacts
+    for(int i = 0; i < animates.size(); i++) {
+        animates[i]->setContext(getCurrentContext());
+    }
 }
 
+void GameWrapper::forceRemoveAllSprites(void) {
+    for(int i = 0; i < animates.size(); i++) {
+        delete animates[i];
+    }
+//    for(int i = 0; i < reacts.size(); i++) {
+//        delete reacts[i];
+//    }
+    animates.erase(animates.begin(), animates.end());
+    reacts.erase(reacts.begin(), reacts.end());
+}
+
+
 void GameWrapper::makeMainMenuBackground(void) {
+    std::cout << "Making main menu\n";
+    forceRemoveAllSprites();
+    //removeSpritesBelongingToContext("game");
     setCurrentContext("mainmenu");
 
     Boy * boy = new Boy("Boy", getCurrentContext(), "imgs/boy.png");
@@ -225,9 +364,10 @@ void GameWrapper::makeMainMenuBackground(void) {
             window->getSize().y, 0, 0, 0);
     Background * mmGrass = new Background("GrassBackground", "mainmenu", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 1);
-    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 700,  100);
-    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 500, 100);
-    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 300, 100);
+
+    Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 600,  100);
+    Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 400, 100);
+    Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 200, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
 
     sortAnimatorsByPriority();
@@ -245,24 +385,32 @@ void GameWrapper::makeMainMenuBackground(void) {
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
     registerReactableSprite(play);
+
 }
 
 void GameWrapper::startGame(void) {
+    gamestart.restart();
+    gamestarted = true;
+    removeSpritesBelongingToContext("mainmenu");
     setCurrentContext("game");
+
     //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
     DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 2);
+
     DrawableWithPriority * cloud2Background = new Background("Cloud2Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, -720, 2);
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
+    DrawableWithPriority * kite = new KiteObj();
+
     registerAnimatableSprite(cloud1Background);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);
-
+    registerAnimatableSprite(kite);
+    registerReactableSprite(kite);
 
 }
-
 
 void GameWrapper::cleanUpSpritesFarOffScreen(void) {
     for(int i = 0; i < animates.size();) {
@@ -286,5 +434,3 @@ void GameWrapper::cleanUpSpritesFarOffScreen(void) {
         }
     }
 }
-
-

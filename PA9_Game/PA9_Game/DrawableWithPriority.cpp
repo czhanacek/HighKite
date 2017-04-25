@@ -8,6 +8,10 @@
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
+    setEnemyStatus(false);
+    numberOfTextureSets = 1;
+    currentFrame = 0;
+    textureOffset = 0;
     removeMe = true;
     clocks.push_back(sf::Clock());
 
@@ -15,9 +19,36 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     name = newName;
 }
 
+
+int DrawableWithPriority::getCurrentSoundIndex(void) {
+    return currentSoundIndex;
+}
+void DrawableWithPriority::playSound(int index) {
+  soundplayer.setBuffer(*(sounds[index]));
+  currentSoundIndex = index;
+  soundplayer.play();
+}
+
+int DrawableWithPriority::addNewSound(std::string filename) {
+    sf::SoundBuffer * sound = new sf::SoundBuffer;
+    bool loaded = sound->loadFromFile(filename);
+    if(loaded) {
+        int location = sounds.size();
+        sounds.push_back(sound);
+        return location;
+    } else {
+        return -1;
+    }
+}
+
+
+// delete all the sprite textures (cuz they're pointers)
 DrawableWithPriority::~DrawableWithPriority() {
     for(int i = 0; i < spriteTextures.size(); i++) {
         delete spriteTextures[i];
+    }
+    for(int i = 0; i < sounds.size(); i++) {
+        delete sounds[i];
     }
 }
 
@@ -55,7 +86,6 @@ unsigned int DrawableWithPriority::getSizeY(void) {
 }
 
 
-
 bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) {
     if(d1.getPriority() > d2.getPriority()) {
         return true;
@@ -68,8 +98,12 @@ bool operator> (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int newPriority) {
     name = newName;
+    textureOffset = 0;
+    numberOfTextureSets = 1;
+    currentFrame = 0;
     removeMe = true;
     clocks.push_back(sf::Clock());
+    setEnemyStatus(false);
     context = newContext;
     sf::Texture * textu = new sf::Texture();
     bool loaded = textu->loadFromFile(filename);
@@ -122,6 +156,10 @@ std::string DrawableWithPriority::getName(void) {
 // This constructor is useful when you just want to set a base texture for your sprite
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
+    setEnemyStatus(false);
+    currentFrame = 0;
+    textureOffset = 0;
+    numberOfTextureSets = 1;
     clocks.push_back(sf::Clock());
     removeMe = true;
     context = newContext;
@@ -137,6 +175,13 @@ Message DrawableWithPriority::unclick() {
     return Message();
 }
 
+bool DrawableWithPriority::isAnEnemy(void) {
+    return isEnemy;
+}
+
+void DrawableWithPriority::setEnemyStatus(bool newEnemyStatus) {
+    isEnemy = newEnemyStatus;
+}
 // returns the current context of the sprite. This ought to match the current context
 // that the game is in.
 std::string DrawableWithPriority::getContext() {
@@ -166,13 +211,12 @@ int DrawableWithPriority::getCurrentTextureIndex(void) {
  */
 
 void DrawableWithPriority::setCurrentTexture(int index) {
-    if(index < 0) {
-        index = spriteTextures.size() - 1;
-    } else if(index > spriteTextures.size() - 1) {
-        index = 0;
+    if(spriteTextures.size() - 1 > 0) {
+        index = index % ((int)spriteTextures.size());
     }
     setTexture(*(spriteTextures[index]));
     currentTextureIndex = index;
+
 }
 
 
@@ -184,7 +228,11 @@ void DrawableWithPriority::receiveMessage(Message msg) {
 
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int x, int y, int iPosX, int iPosY, int newPriority) {
     name = newName;
+    currentFrame = 0;
+    numberOfTextureSets = 1;
     context = newContext;
+    textureOffset = 0;
+    setEnemyStatus(false);
     removeMe = true;
     clocks.push_back(sf::Clock());
     sf::Texture * textu = new sf::Texture();

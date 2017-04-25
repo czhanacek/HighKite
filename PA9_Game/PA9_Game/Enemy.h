@@ -48,6 +48,22 @@ public:
 		direction = newDirection;
 	}
 
+	void receiveMessage(Message msg) {
+
+	}
+
+	Message react(sf::Event e){
+        return Message();
+	}
+
+	Message click(void) {
+        return Message();
+	}
+
+	Message unclick(void) {
+        return Message();
+	}
+
 	//All enemies will have an overriden update() function
 
 
@@ -65,7 +81,7 @@ class Bird : public Enemy
 {
 public:
 
-	Bird(std::string newName, std::string newContext) :Enemy("Bird", "game", 15)
+	Bird(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/bird-1.png");
@@ -175,6 +191,8 @@ public:
 		return Message();
 	}
 
+
+
 private:
 	int angle = rand() % 180;
 };
@@ -184,7 +202,7 @@ private:
 class Seagull : public Enemy
 {
 public:
-	Seagull(std::string newName, std::string newContext) :Enemy("Seagull", "game", 15)
+	Seagull(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/seagull.png");

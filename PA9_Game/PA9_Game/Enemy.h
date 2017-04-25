@@ -13,7 +13,9 @@ class Enemy : public DrawableWithPriority
 {
 public:
 	Enemy(std::string newName, std::string newContext, int newPriority) :DrawableWithPriority(newName, newContext, newPriority)
-	{}
+	{
+        setEnemyStatus(true);
+	}
 	// The enemy's speeds and directions will be set in its constructor. However, they can be modified in update()
 
 	float getMovementSpeedHorizontal()
@@ -237,6 +239,7 @@ public:
 	}
 private:
 	int angle = 0;
+	bool fullRotation = false;
 	bool divebomb = false;
 };
 
@@ -258,12 +261,12 @@ public:
 		// Depending on the corner from which it spans, the star will either travel to the bottom left or bottom right corner
 		if (rand() % 2 == 1)
 		{
-			setPosition(-50, -50 + (rand() % 11 - 10)));
+			setPosition(-50, -50 + (rand() % 11 - 10));
 			setDirection(1);
 		}
 		else
 		{
-			setPosition(1330, -50 + (rand() % 11 - 10)));
+			setPosition(1330, -50 + (rand() % 11 - 10));
 			setDirection(-1);
 		}
 		clocks.push_back(sf::Clock());
@@ -279,7 +282,7 @@ public:
 			}
 			if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
 				// For the ShootingStar's animation, the star should only rotate will moving
-				this->setRotation(getRoation() + 1);
+				this->setRotation(getRotation() + 1);
 				clocks[1].restart();
 			}
 			return Message();
@@ -303,7 +306,7 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
 		clocks.push_back(sf::Clock());
 	}
 
@@ -343,7 +346,7 @@ public:
 		//set scale and position
 		setScale(0.35, 0.35);
 
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x) + , -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
 		clocks.push_back(sf::Clock());
 	}
 
@@ -389,7 +392,7 @@ public:
 		setDirection(-1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(-50, 770 + (rand() % 11 - 10)));
+		setPosition(-50, 770 + (rand() % 11 - 10));
 
 		// The Missile should span from either of the bottom corners
 		// Depending on the corner from which it spans, the Missile will either travel to the top left or top right corner
@@ -506,7 +509,7 @@ public:
 		}
 
 		// Here we check whether to divebomb or to keep following the kite
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500 && divebomb && getMovementSpeedDown != 4) {
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 500 && divebomb && getMovementSpeedDown() != 4) {
 			//We enter this if statement once we have shot 5 times
 				//We do the getMovementSpeedDown check so that we dont check once the spaceship is dive bombing
 				// Once we are divebombing, there is no moving horizontally

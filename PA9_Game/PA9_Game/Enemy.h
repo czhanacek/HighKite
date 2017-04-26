@@ -48,7 +48,7 @@ public:
 	{
 		direction = newDirection;
 	}
-
+    bool startScream = false;
 	//All enemies will have an overriden update() function
 
 
@@ -67,6 +67,7 @@ public:
 	Bird(std::string newName, std::string newContext) :Enemy("Bird", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewSound("sounds/hawkscream.ogg");
 		addNewTexture("imgs/bird-1.png");
 		addNewTexture("imgs/bird-1-flipped.png");
 		addNewTexture("imgs/bird-2.png");
@@ -126,7 +127,20 @@ public:
 
     void receiveMessage(Message msg)
     {
+        if(msg.getSender() == getName() && msg.getContent() == "collided," + signature)
+        {
+            setColor(sf::Color(255,0,0,200));
+            move(0,25);
+            if(!startScream)
+            {
+                startScream = true;
+                playSound(0);
+            }
+        }
+
     }
+
+
     Message click()
     {
         return Message();
@@ -186,8 +200,19 @@ public:
         return Message();
    }
 
-    void receiveMessage(Message msg)
+   void receiveMessage(Message msg)
     {
+        if(msg.getSender() == getName() && msg.getContent() == "collided," + signature)
+        {
+            setColor(sf::Color(255,0,0,200));
+            move(0,25);
+            if(!startScream)
+            {
+                startScream = true;
+                playSound(0);
+            }
+        }
+
     }
     Message click()
     {
@@ -263,6 +288,17 @@ public:
 
     void receiveMessage(Message msg)
     {
+        if(msg.getSender() == getName() && msg.getContent() == "collided," + signature)
+        {
+            setColor(sf::Color(255,0,0,200));
+            move(0,25);
+            if(!startScream)
+            {
+                startScream = true;
+                playSound(0);
+            }
+        }
+
     }
     Message click()
     {

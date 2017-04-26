@@ -258,8 +258,9 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
         exit(0);
     }
     if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
-        gamestart.restart();
-        gamestarted = true;
+          //  gamestart.restart();
+           // gamestarted = true;
+           makeMainMenuBackground();
     }
 }
 

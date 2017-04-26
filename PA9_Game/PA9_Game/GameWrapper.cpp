@@ -126,6 +126,11 @@ GameWrapper::GameWrapper() {
             clk2.restart();
             cleanUpSpritesFarOffScreen();
         }
+        if(gamestart.getElapsedTime().asSeconds() >= 0.5 && gamestarted) {
+            gamestarted = false;
+            makeMainMenuBackground();
+
+        }
         checkForCollisionsWithKite();
         messageBlaster(); // Sends messages to all the reactables
         window->clear();
@@ -191,7 +196,7 @@ void GameWrapper::checkForCollisionsWithKite(void) {
             if(animates[i]->isAnEnemy()) {
                 if(Collision::PixelPerfectTest(*(animates[i]), *(animates[indexOfKite]))) {
                     std::cout << "Kite collided with " << animates[i]->getName() << std::endl;
-                    addMessageToQueue(Message(animates[i]->getName(), "collided"));
+                    addMessageToQueue(Message(animates[i]->getName(), "collided," + animates[i]->signature));
                     addMessageToQueue(Message(animates[indexOfKite]->getName(), "collided"));
                 }
 /*                 if(animates[i]->getGlobalBounds().intersects(animates[indexOfKite]->getGlobalBounds())) {
@@ -232,16 +237,19 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
         exit(0);
     }
     if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
-        makeMainMenuBackground();
+        gamestart.restart();
+        gamestarted = true;
     }
 }
 
 void GameWrapper::removeSpritesByName(std::string theName) {
+    // the same deletion method applies to all places where we remove sprites
     for(int i = 0; i < animates.size(); i++) {
         if(animates[i]->getName() == theName) {
             bool foundMatch = false;
+            // Now we have to check if the same sprite exists in reacts so that we can make sure to get rid of it there too
             for(int x = 0; x < reacts.size(); x++) {
-                if(animates[i] == reacts[x]) {
+                if(animates[i] == reacts[x]) { // yes, the sprite is in both reacts and animates, so delete it from both vectors
                     delete animates[i];
                     foundMatch = true;
                     animates.erase(animates.begin() + i);
@@ -251,6 +259,7 @@ void GameWrapper::removeSpritesByName(std::string theName) {
                 }
             }
             if(!foundMatch) {
+                // no, it only exists in animates, so just delete it from there
                 delete animates[i];
                 animates.erase(animates.begin() + i);
                 //i = 0;
@@ -291,6 +300,7 @@ void GameWrapper::sortAnimatorsByPriority(void) {
 
 
 void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
+    // the same deletion method applies to all places where we remove sprites. See removeSpritesByName for details
     int unremovalableException = 0;
 //    if(animates.size() > 0) {
 //        for(int i = unremovalableException; i < animates.size();) {
@@ -494,7 +504,7 @@ void GameWrapper::makeMainMenuBackground(void) {
 
 void GameWrapper::startGame(void) {
     gamestart.restart();
-    gamestarted = true;
+    gamestarted = false;
     removeSpritesBelongingToContext("mainmenu");
     if(getCurrentContext() == "mainmenu") {
         setCurrentContext("game");
@@ -519,6 +529,7 @@ void GameWrapper::startGame(void) {
 }
 
 void GameWrapper::cleanUpSpritesFarOffScreen(void) {
+    // the same deletion method applies to all places where we remove sprites. See removeSpritesByName for details
     for(int i = 0; i < animates.size();) {
         if(animates[i]->getPosition().y > 2000 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
             bool foundMatch = false;

@@ -9,6 +9,8 @@
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
     setEnemyStatus(false);
+    signature = DrawableWithPriority::idm++;
+    std::cout << "My signature is " << signature << std::endl;
     numberOfTextureSets = 1;
     currentFrame = 0;
     textureOffset = 0;
@@ -270,3 +272,4 @@ bool operator< (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
     }
 
 }
+int DrawableWithPriority::idm = 0;

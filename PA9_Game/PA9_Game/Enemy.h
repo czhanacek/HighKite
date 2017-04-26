@@ -59,10 +59,8 @@ private:
 
 };
 
-
-// Bird only goes staright down, the most basic of enemies!
-
-class Bird : public Enemy
+// The bird moves diagonally, it is a very basic enemy
+class Bird : public Enemy //FINAL
 {
 public:
 
@@ -128,7 +126,7 @@ private:
 
 // Like the Bird, Eagle will move downwards but it will go down in a sine-like path, hence the need
 // for an angle data member
-class Eagle : public Enemy
+class Eagle : public Enemy  //FINAL
 {
 public:
 	Eagle(std::string newName, std::string newContext) : Enemy("Eagle", "game", 15)
@@ -164,11 +162,6 @@ public:
 
 			clocks[0].restart();
 		}
-		//if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
-		//	// Update Animation
-		//	setRotation((getRotation() + 1) *-1);
-		//	clocks[1].restart();
-		//}
 		return Message();
 	}
 
@@ -194,7 +187,7 @@ public:
 		double prelim = rand() % 50 + 35;
 		double seagullSize = (prelim / 100.0);
 		setScale(seagullSize, seagullSize);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x)) + this->spriteTextures[0]->getSize().x, -500);
 
 		clocks.push_back(sf::Clock());
 	}
@@ -245,8 +238,9 @@ public:
 
 	ShootingStar(std::string newName, std::string newContext) :Enemy("ShootingStar", "game", 15)
 	{
+		int speed = rand() % 6 + 2;
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		setMovementSpeedDown(1);
+		setMovementSpeedDown(speed);
 		setMovementSpeedHorizontal(3);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -314,16 +308,21 @@ public:
 			move(getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
-		if (this->getPosition().y == 600)
+		if (this->getPosition().y >= 450)
 		{
 			//when the nuke "blows" up, it should change it animation to an explosion
-			setCurrentTexture(getCurrentTextureIndex() + 1);
+			if (!blownUp)
+			{
+				setCurrentTexture(1);
+				blownUp = true;
+			}
 			// BLOW UP!
 		}
 		return Message();
 	}
 
 private:
+	bool blownUp= false;
 };
 
 
@@ -339,7 +338,7 @@ public:
 		addNewTexture("imgs/spaceship-2.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(1);
-		setMovementSpeedHorizontal(1);
+		setMovementSpeedHorizontal(2);
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -389,14 +388,14 @@ private:
 class Missile : public Enemy
 {
 public:
-
+	int speed = 0;
 	Missile(std::string newName, std::string newContext) :Enemy("Missile", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		speed = rand() % 5 + 1;
 		setMovementSpeedHorizontal(2);
 		setDirection(-1);
 		//set scale and position
-		//setScale(0.35, 0.35);
 		setPosition(-50, 770 + (rand() % 11 - 10));
 
 		// The Missile should span from either of the bottom corners
@@ -404,7 +403,7 @@ public:
 		if (rand() % 2 == 1)
 		{
 			setPosition(-50, 770 + (rand() % 11 - 10));		//Travel to the top right corner
-			setMovementSpeedDown(1);
+			setMovementSpeedDown(-speed);
 			setDirection(1);
 			addNewTexture("imgs/missile-left-1.png");
 			addNewTexture("imgs/missile-left-2.png");
@@ -414,7 +413,7 @@ public:
 		else
 		{
 			setPosition(1330, 770 + (rand() % 11 - 10));	//Travel to the top Left corner
-			setMovementSpeedDown(-1);
+			setMovementSpeedDown(-speed);
 			setDirection(-1);
 			addNewTexture("imgs/missile-right-1.png");
 			addNewTexture("imgs/missile-right-2.png");
@@ -432,8 +431,8 @@ public:
 			move(getDirection()* getMovementSpeedHorizontal(), getMovementSpeedDown());
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-			//setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 30) {
+			setCurrentTexture(rand() % 3);
 			clocks[1].restart();
 		}
 
@@ -452,15 +451,23 @@ public:
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/football-1.png");
-		addNewTexture("imgs/football-1.png");
-		addNewTexture("imgs/football-1.png");
+		addNewTexture("imgs/football-2.png");
 		setCurrentTexture(0);
-		setMovementSpeedDown(2);
-		setMovementSpeedHorizontal(2);
-		setDirection(1);
+		setMovementSpeedDown(6);
+		
+		setDirection(-1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(-50, 650 + (rand() % 11 - 10));
+		if (rand() % 2 == 1)
+		{
+			setPosition(-50, 650 + (rand() % 11 - 10));
+			setMovementSpeedHorizontal(8);
+		}
+		else
+		{
+			setPosition(1320, 650 + (rand() % 11 - 10));
+			setMovementSpeedHorizontal(-8);
+		}
 		clocks.push_back(sf::Clock());
 	}
 
@@ -476,8 +483,9 @@ public:
 			angle++;
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-			//setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
+		if (clocks[1].getElapsedTime().asMilliseconds() >= 300) {
+			setCurrentTexture(rand() % 2);
+			setRotation(getRotation() + 5);
 			clocks[1].restart();
 
 		}
@@ -582,4 +590,37 @@ public:
 		return Message();
 	}
 };
-//
+
+class Andy : public Enemy
+{
+public:
+	Andy(std::string newName, std::string newContext) : Enemy(newName, newContext, 15)
+	{
+		addNewTexture("imgs/andrew.png");
+		setScale(.35, .35);
+		setCurrentTexture(0);
+		setMovementSpeedDown(0);
+		setMovementSpeedHorizontal(10);
+		setOrigin(-60, 30);
+		setPosition(-60, 30);
+		clocks.push_back(sf::Clock());
+		setDirection(1);
+	}
+	~Andy() {}
+
+	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
+	{
+		if (clocks[0].getElapsedTime().asMilliseconds() >= 1500)
+		{
+			setPosition(rand() % 1250 + 10, rand() % 680 + 10);
+			setRotation(rand() %360);
+			clocks[0].restart();
+		}
+		if (this->getPosition().x >= 300 || this->getPosition().x <= -100)
+		{
+			setDirection(getDirection()*-1);
+		}
+	
+		return Message();
+	}
+};

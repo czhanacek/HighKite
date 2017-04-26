@@ -144,7 +144,7 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 5;
+    int randomNumber = rand() % 9;
     DrawableWithPriority * enemy;
     switch(randomNumber) {
     case 0:
@@ -172,7 +172,7 @@ void GameWrapper::spawnRandomEnemy(void) {
 		enemy = new Football("Football", getCurrentContext());
 		break;
 	case 8:
-		//enemy = new Mothership("Mothership", getCurrentContext(), &kite);
+		enemy = new Andy("Andy", getCurrentContext());
 		break;
     }
     registerAnimatableSprite(enemy);
@@ -422,10 +422,16 @@ void GameWrapper::makeGameOverScreen(void)
 				addMessageToQueue(reacts[i]->react(event));
 			}
 		}
+
+		
 		messageBlaster(); // Sends messages to all the reactables
 		window->clear();
 		sortAnimatorsByPriority();
 
+		registerReactableSprite(mmBackground);
+		registerReactableSprite(mmGrass);
+		registerReactableSprite(quit);
+		registerReactableSprite(playAgain);
 		window->display();
 	}
 }

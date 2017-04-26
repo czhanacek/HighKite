@@ -10,6 +10,7 @@
 #include "KiteObj.h"
 #include "Enemy.h"
 #include "Collision.h"
+#include "Instructions.h"
 #include <string.h>
 
 #include <queue>
@@ -28,6 +29,8 @@ class GameWrapper
         void cleanUpSpritesFarOffScreen(void);
         void handleGameWrapperMessages(Message msg);
         void makeMainMenuBackground(void);
+        void removeSpritesByName(std::string theName);
+        void showInstructions(void);
         void checkForClicks(void);
         void checkForUnclicks(void);
         void messageBlaster(void);

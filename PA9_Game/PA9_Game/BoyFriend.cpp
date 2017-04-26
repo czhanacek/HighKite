@@ -2,7 +2,7 @@
 
 BoyFriend::BoyFriend(std::string newName, std::string newContext, std::string filename) : DrawableWithPriority(newName, newContext, filename, 15) {
     setPosition(100, 400);
-    addNewTexture("imgs/boy-bigmouth.gif");
+    //addNewTexture("imgs/boy-bigmouth.gif");
     removeMe = false;
 }
 

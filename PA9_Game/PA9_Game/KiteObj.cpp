@@ -14,8 +14,9 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
     addNewTexture("imgs/kite4.png");
     addNewTexture("imgs/kite5.png");
     setCurrentTexture(0);
-    setScale(0.20, 0.20);
+    setScale(0.17, 0.17);
     setPosition(750, 105);
+
     clocks.push_back(sf::Clock());
 }
 

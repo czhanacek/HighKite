@@ -1,6 +1,5 @@
 #include "GameWrapper.h"
 
-
 /* Current message senders and their messages
     - gamewrapper
         - context changed
@@ -54,7 +53,7 @@ GameWrapper::GameWrapper() {
                 checkForUnclicks();
             }
 
-            else if(event.type == sf::Event::KeyPressed){
+            else if(event.type == sf::Event::KeyPressed && getCurrentContext() == "game"){
                 Message msg = Message("gamewrapper", "");
 
                 if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
@@ -205,8 +204,6 @@ void GameWrapper::checkForCollisionsWithKite(void) {
         }
 
     }
-
-
 }
 
 GameWrapper::~GameWrapper() {
@@ -348,13 +345,9 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
 //    }
 }
 
-
-
-
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
-
 
 void GameWrapper::checkForClicks(void) {
     int reactsHighestPriorityIndex = -1;
@@ -473,7 +466,7 @@ void GameWrapper::makeMainMenuBackground(void) {
     Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 400, 100);
     Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 200, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
-
+    KiteObj * menuKite = new KiteObj();
     sortAnimatorsByPriority();
 
     registerAnimatableSprite(windcloud);
@@ -489,6 +482,8 @@ void GameWrapper::makeMainMenuBackground(void) {
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
     registerReactableSprite(play);
+    registerAnimatableSprite(menuKite);
+    registerReactableSprite(menuKite);
 
 }
 
@@ -496,6 +491,8 @@ void GameWrapper::startGame(void) {
     gamestart.restart();
     gamestarted = true;
     removeSpritesBelongingToContext("mainmenu");
+    addMessageToQueue(Message("gamewrapper", "Game started"));
+  
     if(getCurrentContext() == "mainmenu") {
         setCurrentContext("game");
 
@@ -507,13 +504,10 @@ void GameWrapper::startGame(void) {
                 window->getSize().y, 0, -720, 2);
         DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
                 window->getSize().y, 0, 0, 3);
-        DrawableWithPriority * kite = new KiteObj();
 
         registerAnimatableSprite(cloud1Background);
         registerAnimatableSprite(cloud2Background);
         registerAnimatableSprite(moveGrass);
-        registerAnimatableSprite(kite);
-        registerReactableSprite(kite);
     }
 
 }

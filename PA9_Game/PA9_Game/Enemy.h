@@ -295,7 +295,7 @@ public:
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
-		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -500);
+		setPosition(rand() % (1280 - 2 * (this->spriteTextures[0]->getSize().x) + this->spriteTextures[0]->getSize().x), -50);
 		clocks.push_back(sf::Clock());
 	}
 
@@ -314,6 +314,7 @@ public:
 			if (!blownUp)
 			{
 				setCurrentTexture(1);
+				setScale(1, 1);
 				blownUp = true;
 			}
 			// BLOW UP!
@@ -488,6 +489,10 @@ public:
 			setRotation(getRotation() + 5);
 			clocks[1].restart();
 
+		}
+		if (angle >= 200)
+		{
+			setPosition(-50, -1500);
 		}
 		return Message();
 	}

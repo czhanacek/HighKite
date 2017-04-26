@@ -144,39 +144,39 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 9;
-    DrawableWithPriority * enemy;
-    switch(randomNumber) {
-    case 0:
-        enemy = new Eagle("Eagle", getCurrentContext());
-        break;
-    case 1:
-        enemy = new Seagull("Seagull", getCurrentContext());
-        break;
-    case 2:
-		enemy = new Spaceship("Spaceship", getCurrentContext());
-		break;
-    case 3:
-		enemy = new ShootingStar("ShootingStar", getCurrentContext());
-		break;
-    case 4:
-        enemy = new Bird("Bird", getCurrentContext());
-        break;
+	int randomNumber = rand() % 6;
+	DrawableWithPriority * enemy;
+	switch (randomNumber) {
+	case 0:
+		//enemy = new Eagle("Eagle", getCurrentContext());
+		//break;
+	case 1:
+		//enemy = new Seagull("Seagull", getCurrentContext());
+		//break;
+	case 2:
+		//enemy = new Spaceship("Spaceship", getCurrentContext());
+		//break;
+	case 3:
+		//enemy = new ShootingStar("ShootingStar", getCurrentContext());
+		//break;
+	case 4:
+		//enemy = new Bird("Bird", getCurrentContext());
+		//break;
 	case 5:
 		enemy = new Nuke("Nuke", getCurrentContext());
 		break;
 	case 6:
-		enemy = new Missile("Missile", getCurrentContext());
-		break;
+	//	enemy = new Missile("Missile", getCurrentContext());
+		///break;
 	case 7:
 		enemy = new Football("Football", getCurrentContext());
 		break;
-	case 8:
-		enemy = new Andy("Andy", getCurrentContext());
-		break;
-    }
-    registerAnimatableSprite(enemy);
-    registerReactableSprite(enemy);
+	//case 8:
+	//	//enemy = new Mothership("Mothership", getCurrentContext(), &kite);
+	//	break;
+	}
+	registerAnimatableSprite(enemy);
+	registerReactableSprite(enemy);
 }
 
 void GameWrapper::registerAnimatableSprite(DrawableWithPriority * newSprite) {
@@ -241,7 +241,6 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
     }
     if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
         makeGameOverScreen();
-
     }
 }
 
@@ -403,8 +402,11 @@ void GameWrapper::makeGameOverScreen(void)
 
 	sortAnimatorsByPriority();
 
+	registerAnimatableSprite(mmBackground);
+	registerAnimatableSprite(mmGrass);
+	registerAnimatableSprite(quit);
+	registerAnimatableSprite(playAgain);
 
-	bool sCurrentlyPressed = false, lCurrentlyPressed = false;
 	while (window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -422,17 +424,9 @@ void GameWrapper::makeGameOverScreen(void)
 				addMessageToQueue(reacts[i]->react(event));
 			}
 		}
-
-		
-		messageBlaster(); // Sends messages to all the reactables
-		window->clear();
+		messageBlaster(); 
 		sortAnimatorsByPriority();
 
-		registerReactableSprite(mmBackground);
-		registerReactableSprite(mmGrass);
-		registerReactableSprite(quit);
-		registerReactableSprite(playAgain);
-		window->display();
 	}
 }
 

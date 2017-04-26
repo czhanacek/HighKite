@@ -44,6 +44,8 @@ class GameWrapper
 		std::string getCurrentContext(void);
 		void setCurrentContext(std::string newCurrentContext);
 
+
+        int randModifier = 3;
     protected:
     private:
         sf::Clock gamestart = sf::Clock();

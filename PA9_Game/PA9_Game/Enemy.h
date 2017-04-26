@@ -381,6 +381,7 @@ public:
 			if (!blownUp)
 			{
 				setCurrentTexture(1);
+				setScale(2,2);
 				blownUp = true;
 			}
 			// BLOW UP!

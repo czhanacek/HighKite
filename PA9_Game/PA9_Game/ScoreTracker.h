@@ -13,6 +13,7 @@ public:
 	void receiveMessage(Message msg);
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 
+
 private:
 	int score;
 };

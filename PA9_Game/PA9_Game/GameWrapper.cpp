@@ -23,7 +23,7 @@ GameWrapper::GameWrapper() {
     music.play();
     gamestart = sf::Clock();
     gamestarted = false;
-    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(), elapsed2 = sf::Clock(); // set up three clocks. Right now, we only use
+    sf::Clock clk1 = sf::Clock(), elapsed = sf::Clock(), clk2 = sf::Clock(), elapsed2 = sf::Clock(), elapsed3 = sf::Clock(); // set up three clocks. Right now, we only use
     // elapsed,
     window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
     //window->setFramerateLimit(30);
@@ -121,6 +121,11 @@ GameWrapper::GameWrapper() {
             spawnRandomEnemy();
         }
 
+        if (elapsed3.getElapsedTime().asSeconds() > 40 && randModifier <= 9) {
+            randModifier++;
+			elapsed3.restart();
+		}
+
         if(clk2.getElapsedTime().asSeconds() >= 0.5) {
             clk2.restart();
             cleanUpSpritesFarOffScreen();
@@ -150,23 +155,24 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 9;
+
+    int randomNumber = rand() % randModifier;
     DrawableWithPriority * enemy;
     switch(randomNumber) {
     case 0:
-        enemy = new Eagle("Eagle", getCurrentContext());
+        enemy = new Bird("Bird", getCurrentContext());
         break;
     case 1:
         enemy = new Seagull("Seagull", getCurrentContext());
         break;
     case 2:
-        enemy = new Spaceship("Spaceship", getCurrentContext());
+        enemy = new Eagle("Eagle", getCurrentContext());
         break;
     case 3:
         enemy = new ShootingStar("ShootingStar", getCurrentContext());
         break;
     case 4:
-        enemy = new Bird("Bird", getCurrentContext());
+        enemy = new Football("Football", getCurrentContext());
         break;
     case 5:
         enemy = new Nuke("Nuke", getCurrentContext());
@@ -175,7 +181,7 @@ void GameWrapper::spawnRandomEnemy(void) {
         enemy = new Missile("Missile", getCurrentContext());
         break;
      case 7:
-        enemy = new Football("Football", getCurrentContext());
+        enemy = new Spaceship("Spaceship", getCurrentContext());
         break;
     case 8:
         enemy = new Andy("Andy", getCurrentContext());

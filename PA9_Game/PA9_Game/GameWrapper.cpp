@@ -136,6 +136,8 @@ GameWrapper::GameWrapper() {
         for(int i = 0; i < animates.size(); i++) {
             window->draw(*(animates[i]));
         }
+
+
         // update textures here
 
         window->display();
@@ -491,6 +493,7 @@ void GameWrapper::startGame(void) {
     gamestart.restart();
     gamestarted = true;
     removeSpritesBelongingToContext("mainmenu");
+
     addMessageToQueue(Message("gamewrapper", "Game started"));
   
     if(getCurrentContext() == "mainmenu") {
@@ -528,6 +531,7 @@ void GameWrapper::startGame(void) {
 		registerAnimatableSprite(scoreFive);
 		registerReactableSprite(scoreFive);
     }
+
 }
 
 void GameWrapper::cleanUpSpritesFarOffScreen(void) {

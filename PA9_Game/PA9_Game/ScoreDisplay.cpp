@@ -18,7 +18,6 @@ DigitOne::DigitOne() : DrawableWithPriority("DigitOne", "game", 13)
 	addNewTexture("imgs/eight.png");
 	addNewTexture("imgs/nine.png");
 
-
 }
 
 
@@ -95,6 +94,7 @@ void DigitTwo::receiveMessage(Message msg)
 
 }
 
+
 Message DigitTwo::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
 	return Message();
 }
@@ -110,6 +110,7 @@ Message DigitTwo::unclick() {
 	return Message();
 
 }
+
 
 
 DigitThree::DigitThree() : DrawableWithPriority("DigitThree", "game", 15)
@@ -149,6 +150,7 @@ void DigitThree::receiveMessage(Message msg)
 	}
 }
 
+
 Message DigitThree::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
 	return Message();
 }
@@ -164,6 +166,7 @@ Message DigitThree::unclick() {
 	return Message();
 
 }
+
 
 
 DigitFour::DigitFour() : DrawableWithPriority("DigitFour", "game", 16)
@@ -203,6 +206,7 @@ void DigitFour::receiveMessage(Message msg)
 	}
 }
 
+
 Message DigitFour::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
 	return Message();
 }
@@ -218,6 +222,7 @@ Message DigitFour::unclick() {
 	return Message();
 
 }
+
 
 
 DigitFive::DigitFive() : DrawableWithPriority("DigitFive", "game", 17)
@@ -255,6 +260,7 @@ void DigitFive::receiveMessage(Message msg)
 
 		setCurrentTexture(intCurrentScore % 10);
 	}
+
 }
 
 Message DigitFive::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
@@ -270,5 +276,6 @@ Message DigitFive::click() {
 }
 Message DigitFive::unclick() {
 	return Message();
+
 
 }

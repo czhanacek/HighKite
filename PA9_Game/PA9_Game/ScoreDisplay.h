@@ -7,10 +7,12 @@ public:
 	DigitOne();
 	~DigitOne();
 	void receiveMessage(Message msg);
+
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 	Message react(sf::Event e);
 	Message click();
 	Message unclick();
+
 
 private:
 	std::vector<DrawableWithPriority *> numbers;
@@ -23,10 +25,12 @@ public:
 	DigitTwo();
 	~DigitTwo();
 	void receiveMessage(Message msg);
+
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 	Message react(sf::Event e);
 	Message click();
 	Message unclick();
+
 
 private:
 	std::vector<DrawableWithPriority *> numbers;
@@ -39,10 +43,12 @@ public:
 	DigitThree();
 	~DigitThree();
 	void receiveMessage(Message msg);
+
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 	Message react(sf::Event e);
 	Message click();
 	Message unclick();
+
 
 private:
 	std::vector<DrawableWithPriority *> numbers;
@@ -55,10 +61,12 @@ public:
 	DigitFour();
 	~DigitFour();
 	void receiveMessage(Message msg);
+
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 	Message react(sf::Event e);
 	Message click();
 	Message unclick();
+
 
 private:
 	std::vector<DrawableWithPriority *> numbers;
@@ -71,10 +79,12 @@ public:
 	DigitFive();
 	~DigitFive();
 	void receiveMessage(Message msg);
+
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate);
 	Message react(sf::Event e);
 	Message click();
 	Message unclick();
+
 
 private:
 	std::vector<DrawableWithPriority *> numbers;

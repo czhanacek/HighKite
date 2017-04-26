@@ -3,7 +3,7 @@
 #include "DrawableWithPriority.h"
 
 #include <math.h>
-// Last updated: 4-25-17
+// Last updated: 4-25-17, 7:13
 
 // The idea behind the enemy class is that it has common attributes that will be shared among all the enemies:
 // horizontal/vertical speed,  and its direction

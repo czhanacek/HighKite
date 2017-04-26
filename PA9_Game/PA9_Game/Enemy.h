@@ -3,6 +3,7 @@
 #include "DrawableWithPriority.h"
 
 #include <math.h>
+// Last updated: 4-25-17
 
 // The idea behind the enemy class is that it has common attributes that will be shared among all the enemies:
 // horizontal/vertical speed,  and its direction
@@ -115,13 +116,9 @@ public:
                 textureOffset = 1;
 			}
 			setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
-			//setCurrentTexture(getCurrentTextureIndex() + 1);
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-			// Update Animation
-			clocks[1].restart();
-		}
+
 		return Message();
 	}
 
@@ -167,11 +164,11 @@ public:
 
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
-			// Update Animation
-			setRotation((getRotation() + 1) *-1);
-			clocks[1].restart();
-		}
+		//if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
+		//	// Update Animation
+		//	setRotation((getRotation() + 1) *-1);
+		//	clocks[1].restart();
+		//}
 		return Message();
 	}
 
@@ -220,7 +217,6 @@ public:
 			}
             if(angle > 180) {
                 setCurrentTexture(1);
-
             }
 			if (angle == 360)  //we set fullRotation to true if angle = 360 ie when the seagull has gone around in a full circle
 			{
@@ -230,10 +226,7 @@ public:
 			}
 			clocks[0].restart();
 		}
-		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-			// Update animation
-			clocks[1].restart();
-		}
+
         return Message();
 
 	}
@@ -261,13 +254,17 @@ public:
 		// Depending on the corner from which it spans, the star will either travel to the bottom left or bottom right corner
 		if (rand() % 2 == 1)
 		{
-			setPosition(-50, -50 + (rand() % 11 - 10));
+			setPosition(-50, -50 + (rand() % 11 - 10));  //coming in from top left 
 			setDirection(1);
+			addNewTexture("imgs/shootingStar-2.png");
+			setCurrentTexture(0);
 		}
 		else
 		{
-			setPosition(1330, -50 + (rand() % 11 - 10));
+			setPosition(1330, -50 + (rand() % 11 - 10));  //coming in from top right 
 			setDirection(-1);
+			addNewTexture("imgs/shootingStar-1.png");
+			setCurrentTexture(0);
 		}
 		clocks.push_back(sf::Clock());
 	}
@@ -279,11 +276,6 @@ public:
 			if (clocks[0].getElapsedTime().asMilliseconds() >= 30) {
 				move(getDirection()*getMovementSpeedHorizontal(), getMovementSpeedDown());
 				clocks[0].restart();
-			}
-			if (clocks[1].getElapsedTime().asMilliseconds() >= 100) {
-				// For the ShootingStar's animation, the star should only rotate will moving
-				this->setRotation(getRotation() + 1);
-				clocks[1].restart();
 			}
 			return Message();
 	}
@@ -301,6 +293,9 @@ public:
 	Nuke(std::string newName, std::string newContext) :Enemy("Nuke", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/nuke-1.png");
+		addNewTexture("imgs/nuke-2.png");
+		setCurrentTexture(0);
 		setMovementSpeedDown(1);
 		setMovementSpeedHorizontal(0);
 		setDirection(1);
@@ -312,7 +307,6 @@ public:
 
 	~Nuke() {}
 
-	//THere really is no need for some sort of animatiion for the nuke
 	Message update(sf::Time totalElapsed, sf::Time sinceLastUpdate)
 	{
 		//go to middle of screen then blow up
@@ -322,6 +316,8 @@ public:
 		}
 		if (this->getPosition().y == 600)
 		{
+			//when the nuke "blows" up, it should change it animation to an explosion
+			setCurrentTexture(getCurrentTextureIndex() + 1);
 			// BLOW UP!
 		}
 		return Message();
@@ -339,6 +335,8 @@ public:
 	Spaceship(std::string newName, std::string newContext) :Enemy("Spaceship", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewTexture("imgs/spaceship-1.png");
+		addNewTexture("imgs/spaceship-2.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(1);
 		setMovementSpeedHorizontal(1);
@@ -363,14 +361,22 @@ public:
 				if (angle % 180 == 0)
 				{
 					setDirection(getDirection()*-1);
+					if (angle % 360 == 0)
+					{
+						setCurrentTexture(0);
+					}
+					else
+					{
+						setCurrentTexture(1);
+					}
 				}
 
 				clocks[0].restart();
 			}
-		if (clocks[1].getElapsedTime().asSeconds() == 2) { //For now, the Spaceship will only shoot at every 2 seconds
-				// Shoot!
-				clocks[1].restart();
-		}
+		//if (clocks[1].getElapsedTime().asSeconds() == 2) { //For now, the Spaceship will only shoot at every 2 seconds
+		//		// Shoot!
+		//		clocks[1].restart();
+		//}
 		return Message();
 	}
 
@@ -387,7 +393,6 @@ public:
 	Missile(std::string newName, std::string newContext) :Enemy("Missile", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-
 		setMovementSpeedHorizontal(2);
 		setDirection(-1);
 		//set scale and position
@@ -401,12 +406,20 @@ public:
 			setPosition(-50, 770 + (rand() % 11 - 10));		//Travel to the top right corner
 			setMovementSpeedDown(1);
 			setDirection(1);
+			addNewTexture("imgs/missile-left-1.png");
+			addNewTexture("imgs/missile-left-2.png");
+			addNewTexture("imgs/missile-left-3.png");
+			setCurrentTexture(0);
 		}
 		else
 		{
 			setPosition(1330, 770 + (rand() % 11 - 10));	//Travel to the top Left corner
 			setMovementSpeedDown(-1);
 			setDirection(-1);
+			addNewTexture("imgs/missile-right-1.png");
+			addNewTexture("imgs/missile-right-2.png");
+			addNewTexture("imgs/missile-right-3.png");
+			setCurrentTexture(0);
 		}
 		clocks.push_back(sf::Clock());
 	}
@@ -420,7 +433,7 @@ public:
 			clocks[0].restart();
 		}
 		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-		// change animation
+			//setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
 			clocks[1].restart();
 		}
 
@@ -438,8 +451,12 @@ public:
 	Football(std::string newName, std::string newContext) :Enemy("Football", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		setMovementSpeedDown(4);
-		setMovementSpeedHorizontal(4);
+		addNewTexture("imgs/football-1.png");
+		addNewTexture("imgs/football-1.png");
+		addNewTexture("imgs/football-1.png");
+		setCurrentTexture(0);
+		setMovementSpeedDown(2);
+		setMovementSpeedHorizontal(2);
 		setDirection(1);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -460,7 +477,7 @@ public:
 			clocks[0].restart();
 		}
 		if (clocks[1].getElapsedTime().asMilliseconds() >= 500) {
-			//Update Animation
+			//setCurrentTexture((currentFrame * numberOfTextureSets) + textureOffset);
 			clocks[1].restart();
 
 		}
@@ -485,9 +502,10 @@ public:
 	{
 		Target = newTarget; //Now we can keep track of where the kite is
 		// use addNewTexture() to add texture to this enemy and add to texture vector
-		addNewTexture("imgs/button.jpg");
+		addNewTexture("imgs/spaceship-1.png");
+		addNewTexture("imgs/spaceship-2.png");
 		setCurrentTexture(0);
-		setMovementSpeedDown(2);
+		setMovementSpeedDown(0);
 		setMovementSpeedHorizontal(2);
 		setDirection(1);
 		//set scale and position
@@ -526,10 +544,12 @@ public:
 			   //Here we check if we are still following the kite
 				if (this->getPosition().x < Target->getPosition().x && getDirection() != 1) //Kite is to right of Mothership
 				{
+					setCurrentTexture(0);
 					setDirection(1);
 				}
 				else if (this->getPosition().x > Target->getPosition().x && getDirection() != -1) //Kite is to left of Mothership
 				{
+					setCurrentTexture(1);
 					setDirection(-1);
 				}
 				else //Mothership is directly above kite
@@ -539,24 +559,18 @@ public:
 			clocks[2].restart();
 		}
 
-		if (clocks[3].getElapsedTime().asSeconds() == 3 && !divebomb) {
-				//Shoot!
-				amountShot++;
-				if (amountShot >= 5)
-				{
-				    divebomb = true;
-					setMovementSpeedDown(6);
-				}
-				clocks[3].restart();
-				//Maybe look into shootingg instead when ship is really close to kite?
+		if (clocks[3].getElapsedTime().asSeconds() >= 7) {
+				////Shoot!
+				//amountShot++;
+				//if (amountShot >= 5)
+				//{
+			    divebomb = true;
+				//	setMovementSpeedDown(6);
+				//}
+				//clocks[3].restart();
+				////Maybe look into shootingg instead when ship is really close to kite?
 		}
 
-		if (clocks[4].getElapsedTime().asMilliseconds() >= 500) {
-				//Update amnimation
-				clocks[4].restart();
-		}
-
-		sf::Sprite::move(getDirection() * getMovementSpeedHorizontal(), getMovementSpeedDown());
 		if (this->getPosition().x < 1)
 		{
 			setPosition(getSizeX(), this->getPosition().y);

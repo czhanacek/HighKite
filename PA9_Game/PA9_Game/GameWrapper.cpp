@@ -134,10 +134,26 @@ void GameWrapper::spawnRandomEnemy(void) {
         enemy = new Seagull("Seagull", getCurrentContext());
         break;
     case 2:
+		enemy = new Spaceship("Spaceship", getCurrentContext());
+		break;
     case 3:
+		enemy = new ShootingStar("ShootingStar", getCurrentContext());
+		break;
     case 4:
         enemy = new Bird("Bird", getCurrentContext());
         break;
+	case 5:
+		enemy = new Nuke("Nuke", getCurrentContext());
+		break;
+	case 6:
+		enemy = new Missile("Missile", getCurrentContext());
+		break;
+	case 7:
+		enemy = new Football("Football", getCurrentContext());
+		break;
+	case 8:
+		//enemy = new Mothership("Mothership", getCurrentContext(), &kite);
+		break;
     }
     registerAnimatableSprite(enemy);
     registerReactableSprite(enemy);
@@ -204,7 +220,7 @@ void GameWrapper::handleGameWrapperMessages(Message msg) {
         exit(0);
     }
     if(msg.getSender() == "Kite" && msg.getContent() == "collided") {
-        makeMainMenuBackground();
+        makeGameOverScreen();
 
     }
 }
@@ -351,6 +367,48 @@ void GameWrapper::forceRemoveAllSprites(void) {
     reacts.erase(reacts.begin(), reacts.end());
 }
 
+void GameWrapper::makeGameOverScreen(void)
+{
+	std::cout << "Making Game Over screen\n";
+	forceRemoveAllSprites();
+	setCurrentContext("gameOverScreen");
+	window = new sf::RenderWindow(sf::VideoMode(1280, 720), "------- High Kite -------");
+
+	Background * mmBackground = new Background("Background", getCurrentContext(), "imgs/clouds.png", window->getSize().x,
+		window->getSize().y, 0, 0, 0);
+	Background * mmGrass = new Background("GrassBackground", getCurrentContext(), "imgs/grass2.png", window->getSize().x,
+		window->getSize().y, 0, 0, 1);
+	Button * quit = new Button("quit", getCurrentContext(), "imgs/button-quit.png", "imgs/button-quit.png", 600, 100);
+	Button * playAgain = new Button("playAgain", getCurrentContext(), "imgs/button-play-again.png", "imgs/button-play-again-pressed.png", 400, 100);
+
+	sortAnimatorsByPriority();
+
+
+	bool sCurrentlyPressed = false, lCurrentlyPressed = false;
+	while (window->isOpen()) {
+		sf::Event event;
+		while (window->pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window->close();
+			else if (event.type == sf::Event::MouseButtonPressed) {
+				checkForClicks();
+			}
+			else if (event.type == sf::Event::MouseButtonReleased) {
+				checkForUnclicks();
+			}
+
+			for (int i = 0; i < reacts.size(); i++) {
+				//std::cout << "Reacting to events\n";
+				addMessageToQueue(reacts[i]->react(event));
+			}
+		}
+		messageBlaster(); // Sends messages to all the reactables
+		window->clear();
+		sortAnimatorsByPriority();
+
+		window->display();
+	}
+}
 
 void GameWrapper::makeMainMenuBackground(void) {
     std::cout << "Making main menu\n";

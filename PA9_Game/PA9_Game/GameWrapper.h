@@ -27,6 +27,7 @@ class GameWrapper
         void cleanUpSpritesFarOffScreen(void);
         void handleGameWrapperMessages(Message msg);
         void makeMainMenuBackground(void);
+		void makeGameOverScreen(void);
         void checkForClicks(void);
         void checkForUnclicks(void);
         void messageBlaster(void);

@@ -136,6 +136,7 @@ public:
     void receiveMessage(Message msg) {
 	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
             setColor(sf::Color(255, 0, 0, 200));
+            move(0, 25);
             if(!startScream) {
                 startScream = true;
                 playSound(0);
@@ -220,6 +221,7 @@ public:
     void receiveMessage(Message msg) {
 	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
             setColor(sf::Color(255, 0, 0, 200));
+            move(0, 25);
             if(!startScream) {
                 startScream = true;
                 playSound(0);
@@ -298,7 +300,6 @@ public:
             move(0, 25);
             if(!startScream) {
                 startScream = true;
-
                 playSound(0);
             }
 	    }

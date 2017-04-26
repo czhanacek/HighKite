@@ -25,6 +25,7 @@ class DrawableWithPriority : public sf::Sprite {
         virtual void receiveMessage(Message msg);
         virtual Message click();
         virtual Message unclick();
+        static int idm;
         int signature;
         std::string getName();
         std::string getContext();

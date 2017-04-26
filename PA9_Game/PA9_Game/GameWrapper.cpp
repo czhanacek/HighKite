@@ -117,7 +117,7 @@ GameWrapper::GameWrapper() {
             registerReactableSprite(lef);
         }
 
-        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 10) {
+        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 16) {
             spawnRandomEnemy();
         }
 
@@ -505,7 +505,7 @@ void GameWrapper::startGame(void) {
     removeSpritesBelongingToContext("mainmenu");
 
     addMessageToQueue(Message("gamewrapper", "Game started"));
-  
+
     if(getCurrentContext() == "mainmenu") {
         setCurrentContext("game");
 

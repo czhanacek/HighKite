@@ -1,5 +1,5 @@
 #include "ScoreDisplay.h"
-
+#include <string>
 
 
 DigitOne::DigitOne() : DrawableWithPriority("DigitOne", "game", 13)
@@ -21,9 +21,9 @@ DigitOne::DigitOne() : DrawableWithPriority("DigitOne", "game", 13)
 }
 
 
-DigitOne::~DigitOne() 
+DigitOne::~DigitOne()
 {
-	
+
 }
 
 void DigitOne::receiveMessage(Message msg)
@@ -32,11 +32,11 @@ void DigitOne::receiveMessage(Message msg)
 	{
 		std::string strCurrentScore = msg.getContent();
 		strCurrentScore.erase(0, 5);
-		int intCurrentScore = stoi(strCurrentScore);
-		
+		int intCurrentScore = atoi(strCurrentScore.c_str());
+
 		setCurrentTexture(intCurrentScore);
 	}
-		
+
 }
 
 Message DigitOne::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
@@ -82,7 +82,7 @@ void DigitTwo::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 2; ++i)
 		{
 				intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -139,7 +139,7 @@ void DigitThree::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 3; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -195,7 +195,7 @@ void DigitFour::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 4; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -251,7 +251,7 @@ void DigitFive::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 5; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);

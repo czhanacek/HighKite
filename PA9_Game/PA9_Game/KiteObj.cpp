@@ -36,10 +36,10 @@ Message KiteObj::update(sf::Time t, sf::Time y)
 
     }
     // This stops the kite after it's gotten into position for the menu start
-    if(getPosition().y == 449){
+    if(getPosition().y == 464){
         mYVelocity = 0;
         mXVelocity = 0;
-        setPosition(getPosition().x, 450);
+        setPosition(getPosition().x, 465);
     }
 
     move(mXVelocity, mYVelocity);

@@ -150,7 +150,7 @@ GameWrapper::GameWrapper() {
 }
 
 void GameWrapper::spawnRandomEnemy(void) {
-    int randomNumber = rand() % 5;
+    int randomNumber = rand() % 9;
     DrawableWithPriority * enemy;
     switch(randomNumber) {
     case 0:
@@ -160,9 +160,25 @@ void GameWrapper::spawnRandomEnemy(void) {
         enemy = new Seagull("Seagull", getCurrentContext());
         break;
     case 2:
+        enemy = new Spaceship("Spaceship", getCurrentContext());
+        break;
     case 3:
+        enemy = new ShootingStar("ShootingStar", getCurrentContext());
+        break;
     case 4:
         enemy = new Bird("Bird", getCurrentContext());
+        break;
+    case 5:
+        enemy = new Nuke("Nuke", getCurrentContext());
+        break;
+    case 6:
+        enemy = new Missile("Missile", getCurrentContext());
+        break;
+     case 7:
+        enemy = new Football("Football", getCurrentContext());
+        break;
+    case 8:
+        enemy = new Andy("Andy", getCurrentContext());
         break;
     }
     registerAnimatableSprite(enemy);

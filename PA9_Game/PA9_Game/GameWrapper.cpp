@@ -233,11 +233,6 @@ GameWrapper::~GameWrapper() {
 
 void GameWrapper::handleGameWrapperMessages(Message msg) {
     if (msg.getSender() == "playGame" && msg.getContent() == "unclicked") {
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 9599456a6ac6c48f9430eb31de918ae151109570
         // Switch to different if statement once the Play Game button is created.
         startGame();
     }

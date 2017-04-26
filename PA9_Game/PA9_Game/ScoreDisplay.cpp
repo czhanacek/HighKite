@@ -113,7 +113,7 @@ Message DigitTwo::unclick() {
 
 
 
-DigitThree::DigitThree() : DrawableWithPriority("DigitThree", "game", 15)
+DigitThree::DigitThree() : DrawableWithPriority("DigitThree", "game", 16)
 {
 	setPosition(1175, 0);
 

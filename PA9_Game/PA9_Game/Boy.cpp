@@ -7,6 +7,7 @@ Boy::Boy(std::string newName, std::string newContext, std::string filename) : Dr
     addNewTexture("imgs/boy-bigmouth.png");
     addNewTexture("imgs/boy-o-mouth.png");
     addNewTexture("imgs/boy-smile.png");
+	setCurrentTexture(0);
 }
 
 Message Boy::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {

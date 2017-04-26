@@ -141,6 +141,8 @@ GameWrapper::GameWrapper() {
         for(int i = 0; i < animates.size(); i++) {
             window->draw(*(animates[i]));
         }
+
+
         // update textures here
 
         window->display();
@@ -501,6 +503,7 @@ void GameWrapper::startGame(void) {
     gamestart.restart();
     gamestarted = false;
     removeSpritesBelongingToContext("mainmenu");
+
     addMessageToQueue(Message("gamewrapper", "Game started"));
   
     if(getCurrentContext() == "mainmenu") {
@@ -515,9 +518,28 @@ void GameWrapper::startGame(void) {
         DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
                 window->getSize().y, 0, 0, 3);
 
+		DrawableWithPriority * sun = new ScoreTracker();
+		DrawableWithPriority * scoreOne = new DigitOne();
+		DrawableWithPriority * scoreTwo = new DigitTwo();
+		DrawableWithPriority * scoreThree = new DigitThree();
+		DrawableWithPriority * scoreFour = new DigitFour();
+		DrawableWithPriority * scoreFive = new DigitFive();
+
+
         registerAnimatableSprite(cloud1Background);
         registerAnimatableSprite(cloud2Background);
         registerAnimatableSprite(moveGrass);
+		registerAnimatableSprite(sun);
+		registerAnimatableSprite(scoreOne);
+		registerReactableSprite(scoreOne);
+		registerAnimatableSprite(scoreTwo);
+		registerReactableSprite(scoreTwo);
+		registerAnimatableSprite(scoreThree);
+		registerReactableSprite(scoreThree);
+		registerAnimatableSprite(scoreFour);
+		registerReactableSprite(scoreFour);
+		registerAnimatableSprite(scoreFive);
+		registerReactableSprite(scoreFive);
     }
 
 }

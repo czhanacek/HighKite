@@ -2,7 +2,7 @@
 
 
 
-DigitOne::DigitOne() : DrawableWithPriority("DigitOne", "game", 13)
+DigitOne::DigitOne() : DrawableWithPriority("DigitOne", "game", 50)
 {
 	//setScale(0.4, 0.4);
 	setPosition(1225, 0);
@@ -56,7 +56,7 @@ Message DigitOne::unclick() {
 }
 
 
-DigitTwo::DigitTwo() : DrawableWithPriority("DigitTwo", "game", 14)
+DigitTwo::DigitTwo() : DrawableWithPriority("DigitTwo", "game", 51)
 {
 	setPosition(1200, 0);
 
@@ -82,7 +82,7 @@ void DigitTwo::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 2; ++i)
 		{
 				intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -113,7 +113,7 @@ Message DigitTwo::unclick() {
 
 
 
-DigitThree::DigitThree() : DrawableWithPriority("DigitThree", "game", 15)
+DigitThree::DigitThree() : DrawableWithPriority("DigitThree", "game", 52)
 {
 	setPosition(1175, 0);
 
@@ -139,7 +139,7 @@ void DigitThree::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 3; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -169,7 +169,7 @@ Message DigitThree::unclick() {
 
 
 
-DigitFour::DigitFour() : DrawableWithPriority("DigitFour", "game", 16)
+DigitFour::DigitFour() : DrawableWithPriority("DigitFour", "game", 53)
 {
 	setPosition(1150, 0);
 
@@ -195,7 +195,7 @@ void DigitFour::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 4; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);
@@ -225,7 +225,7 @@ Message DigitFour::unclick() {
 
 
 
-DigitFive::DigitFive() : DrawableWithPriority("DigitFive", "game", 17)
+DigitFive::DigitFive() : DrawableWithPriority("DigitFive", "game", 54)
 {
 	setPosition(1125, 0);
 
@@ -251,7 +251,7 @@ void DigitFive::receiveMessage(Message msg)
 	if (msg.getSender() == "ScoreTracker")
 	{
 		std::string strCurrentScore = msg.getContent();
-		int intCurrentScore = stoi(strCurrentScore);
+		int intCurrentScore = atoi(strCurrentScore.c_str());
 		for (int i = 1; i < 5; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);

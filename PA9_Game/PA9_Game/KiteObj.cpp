@@ -1,7 +1,7 @@
 #pragma once
 #include "KiteObj.h"
 
-KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
+KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 30)
 {
     mXVelocity = 0;
     mYVelocity = 0;

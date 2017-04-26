@@ -25,7 +25,7 @@ int ScoreTracker::getScore()
 }
 
 Message ScoreTracker::update(sf::Time totalElapsed, sf::Time sinceLastUpdate) {
-	std::cout << "Score" << getScore() << std::endl;
+	//std::cout << "Score" << getScore() << std::endl;
 	if (getContext() == "game") {
 		if (clocks[0].getElapsedTime().asMilliseconds() > 400) {
 			setScore(getScore() + 1);

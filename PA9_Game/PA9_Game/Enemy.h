@@ -42,14 +42,16 @@ public:
 	{
 		movementSpeedDown = newSpeed;
 	}
-
+    bool startScream = false;
 	void setDirection(int newDirection)
 	{
 		direction = newDirection;
 	}
 
 	void receiveMessage(Message msg) {
-
+	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
+            setColor(sf::Color(255, 0, 0, 200));
+	    }
 	}
 
 
@@ -89,6 +91,7 @@ public:
 
 	Bird(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
+        addNewSound("sounds/hawkscream.ogg");
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/bird-1.png");
 		addNewTexture("imgs/bird-1-flipped.png");
@@ -117,7 +120,6 @@ public:
             setMovementSpeedHorizontal(4);
 		}
 
-
 		setDirection(-1);
 		//set scale and position
 		setScale(0.35, 0.35);
@@ -131,6 +133,17 @@ public:
 	{
 	}
 
+    void receiveMessage(Message msg) {
+	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
+            setColor(sf::Color(255, 0, 0, 200));
+            move(0, 25);
+            if(!startScream) {
+                startScream = true;
+                playSound(0);
+            }
+
+	    }
+	}
 	Message update(sf::Time t, sf::Time y)  // birds will move only straight down for the time being
 	{
 		if (clocks[0].getElapsedTime().asMilliseconds() >= 20) {
@@ -166,6 +179,7 @@ public:
 	Eagle(std::string newName, std::string newContext) : Enemy("Eagle", "game", 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewSound("sounds/hawkscream.ogg");
 		addNewTexture("imgs/eagle.png");
 		addNewTexture("imgs/eagle-flipped.png");
 		setCurrentTexture(0);
@@ -204,7 +218,16 @@ public:
 		return Message();
 	}
 
-
+    void receiveMessage(Message msg) {
+	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
+            setColor(sf::Color(255, 0, 0, 200));
+            move(0, 25);
+            if(!startScream) {
+                startScream = true;
+                playSound(0);
+            }
+	    }
+	}
 
 private:
 	int angle = rand() % 180;
@@ -215,9 +238,11 @@ private:
 class Seagull : public Enemy
 {
 public:
+
 	Seagull(std::string newName, std::string newContext) :Enemy(newName, newContext, 15)
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
+		addNewSound("sounds/hawkscream.ogg");
 		addNewTexture("imgs/seagull.png");
 		addNewTexture("imgs/seagull-flipped.png");
 		setCurrentTexture(0);
@@ -267,6 +292,17 @@ public:
 		}
         return Message();
 
+	}
+
+	void receiveMessage(Message msg) {
+	    if(msg.getSender() == getName() && msg.getContent() == "collided," + signature) {
+            setColor(sf::Color(255, 0, 0, 200));
+            move(0, 25);
+            if(!startScream) {
+                startScream = true;
+                playSound(0);
+            }
+	    }
 	}
 private:
 	int angle = 0;

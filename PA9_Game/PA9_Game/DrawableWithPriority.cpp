@@ -9,6 +9,8 @@
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, int newPriority) : sf::Sprite() {
     setPriority(newPriority);
     setEnemyStatus(false);
+    signature = DrawableWithPriority::idm++;
+    std::cout << "My signature is " << signature << std::endl;
     numberOfTextureSets = 1;
     currentFrame = 0;
     textureOffset = 0;
@@ -103,6 +105,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     numberOfTextureSets = 1;
     currentFrame = 0;
     removeMe = true;
+    signature = DrawableWithPriority::idm++;
     clocks.push_back(sf::Clock());
     setEnemyStatus(false);
     context = newContext;
@@ -170,6 +173,7 @@ std::string DrawableWithPriority::getName(void) {
 DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newContext, std::string filename, int newPriority) {
     name = newName;
     setEnemyStatus(false);
+    signature = DrawableWithPriority::idm++;
     currentFrame = 0;
     textureOffset = 0;
     numberOfTextureSets = 1;
@@ -243,6 +247,7 @@ DrawableWithPriority::DrawableWithPriority(std::string newName, std::string newC
     name = newName;
     currentFrame = 0;
     numberOfTextureSets = 1;
+    signature = DrawableWithPriority::idm++;
     context = newContext;
     textureOffset = 0;
     setEnemyStatus(false);
@@ -270,3 +275,4 @@ bool operator< (const DrawableWithPriority &d1, const DrawableWithPriority &d2) 
     }
 
 }
+int DrawableWithPriority::idm = 0;

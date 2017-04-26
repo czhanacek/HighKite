@@ -25,6 +25,8 @@ class DrawableWithPriority : public sf::Sprite {
         virtual void receiveMessage(Message msg);
         virtual Message click();
         virtual Message unclick();
+        static int idm;
+        int signature;
         std::string getName();
         std::string getContext();
         void setContext(std::string newContext);
@@ -50,8 +52,6 @@ class DrawableWithPriority : public sf::Sprite {
         void setCurrentTexture(int index);
         void setEnemyStatus(bool newEnemyStatus);
         bool isAnEnemy(void);
-
-
     private:
         int priority;
         bool isEnemy;

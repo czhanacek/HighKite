@@ -1,7 +1,7 @@
 #pragma once
 #include "KiteObj.h"
 
-KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
+KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 30)
 {
     mXVelocity = 0;
     mYVelocity = 0;
@@ -15,7 +15,7 @@ KiteObj::KiteObj() : DrawableWithPriority("Kite", "game", 50)
     addNewTexture("imgs/kite5.png");
     setCurrentTexture(0);
     setScale(0.17, 0.17);
-    setPosition(750, 105);
+    setPosition(775, 113);
 
     clocks.push_back(sf::Clock());
 }
@@ -36,10 +36,10 @@ Message KiteObj::update(sf::Time t, sf::Time y)
 
     }
     // This stops the kite after it's gotten into position for the menu start
-    if(getPosition().y == 449){
+    if(getPosition().y == 464){
         mYVelocity = 0;
         mXVelocity = 0;
-        setPosition(getPosition().x, 450);
+        setPosition(getPosition().x, 465);
     }
 
     move(mXVelocity, mYVelocity);

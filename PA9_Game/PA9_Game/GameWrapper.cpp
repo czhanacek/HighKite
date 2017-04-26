@@ -1,6 +1,5 @@
 #include "GameWrapper.h"
 
-
 /* Current message senders and their messages
     - gamewrapper
         - context changed
@@ -54,7 +53,7 @@ GameWrapper::GameWrapper() {
                 checkForUnclicks();
             }
 
-            else if(event.type == sf::Event::KeyPressed){
+            else if(event.type == sf::Event::KeyPressed && getCurrentContext() == "game"){
                 Message msg = Message("gamewrapper", "");
 
                 if(!lCurrentlyPressed && event.key.code == sf::Keyboard::L){
@@ -286,13 +285,9 @@ void GameWrapper::removeSpritesBelongingToContext(std::string theContext) {
     }
 }
 
-
-
-
 // Fantastically roasty forum thread that I found when trying to figure out how clicking on sprites works
 // "do you even know geometry? trigonometry?"
 // https://en.sfml-dev.org/forums/index.php?topic=5662.0
-
 
 void GameWrapper::checkForClicks(void) {
 
@@ -389,7 +384,8 @@ void GameWrapper::makeMainMenuBackground(void) {
     Button * instructions = new Button("showInstructions", getCurrentContext(), "imgs/button-instructions.png", "imgs/button-instructions-pressed.png", 400, 100);
     Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 200, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
-
+    KiteObj * menuKite = new KiteObj();
+    menuKite->setPosition(750, 105);
     sortAnimatorsByPriority();
 
     registerAnimatableSprite(windcloud);
@@ -405,15 +401,21 @@ void GameWrapper::makeMainMenuBackground(void) {
     registerReactableSprite(instructions);
     registerAnimatableSprite(play);
     registerReactableSprite(play);
+    registerAnimatableSprite(menuKite);
+    registerReactableSprite(menuKite);
 
 }
 
 void GameWrapper::startGame(void) {
+    std::cout << "Start Game executed" << std::endl;
     gamestart.restart();
     gamestarted = true;
+    std::cout << "Game Started" << std::endl;
     removeSpritesBelongingToContext("mainmenu");
+    std::cout << "Removed sprites belonging to mainmenu context" << std::endl;
     setCurrentContext("game");
-
+    addMessageToQueue(Message("gamewrapper", "Game started"));
+    std::cout << "Changed context" << std::endl;
     //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
     DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 2);
@@ -422,13 +424,13 @@ void GameWrapper::startGame(void) {
             window->getSize().y, 0, -720, 2);
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
-    DrawableWithPriority * kite = new KiteObj();
+    //DrawableWithPriority * kite = new KiteObj();
 
     registerAnimatableSprite(cloud1Background);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);
-    registerAnimatableSprite(kite);
-    registerReactableSprite(kite);
+    //registerAnimatableSprite(kite);
+    //registerReactableSprite(kite);
 
 }
 

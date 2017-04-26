@@ -204,8 +204,6 @@ void GameWrapper::checkForCollisionsWithKite(void) {
         }
 
     }
-
-
 }
 
 GameWrapper::~GameWrapper() {
@@ -407,15 +405,12 @@ void GameWrapper::makeMainMenuBackground(void) {
 }
 
 void GameWrapper::startGame(void) {
-    std::cout << "Start Game executed" << std::endl;
     gamestart.restart();
     gamestarted = true;
-    std::cout << "Game Started" << std::endl;
     removeSpritesBelongingToContext("mainmenu");
-    std::cout << "Removed sprites belonging to mainmenu context" << std::endl;
     setCurrentContext("game");
     addMessageToQueue(Message("gamewrapper", "Game started"));
-    std::cout << "Changed context" << std::endl;
+
     //DrawableWithPriority * boy = new Boy("Boy", "game", "imgs/boy.gif");
     DrawableWithPriority * cloud1Background = new Background("Cloud1Background", "game", "imgs/clouds.png", window->getSize().x,
             window->getSize().y, 0, 0, 2);
@@ -424,13 +419,10 @@ void GameWrapper::startGame(void) {
             window->getSize().y, 0, -720, 2);
     DrawableWithPriority * moveGrass = new Background("BackgroundGrass", "game", "imgs/grass2.png", window->getSize().x,
             window->getSize().y, 0, 0, 3);
-    //DrawableWithPriority * kite = new KiteObj();
 
     registerAnimatableSprite(cloud1Background);
     registerAnimatableSprite(cloud2Background);
     registerAnimatableSprite(moveGrass);
-    //registerAnimatableSprite(kite);
-    //registerReactableSprite(kite);
 
 }
 

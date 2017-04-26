@@ -52,7 +52,7 @@ DrawableWithPriority::~DrawableWithPriority() {
     for(int i = 0; i < sounds.size(); i++) {
         delete sounds[i];
     }
-    std::cout << getName() << " successfully removed\n";
+    std::cout << getName() << signature << " successfully removed\n";
 }
 
 void DrawableWithPriority::setPriority(int newPriority) {

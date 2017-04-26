@@ -9,7 +9,12 @@
 #include "Cloud.h"
 #include "KiteObj.h"
 #include "Enemy.h"
+<<<<<<< HEAD
 #include "Collision.h"
+=======
+#include <string.h>
+
+>>>>>>> 9599456a6ac6c48f9430eb31de918ae151109570
 
 #include <queue>
 class GameWrapper

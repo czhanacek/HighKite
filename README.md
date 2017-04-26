@@ -1,8 +1,9 @@
 # HighKite
 122 Final Programming Assignment
-Peter Brennan
-Stacia Lesser
-Charlie Hanacek
+  Peter Brennan
+  Stacia Lesser
+  Charlie Hanacek
+  Adolfo Garcia
 
 
 Sources for the images we got online:
@@ -17,7 +18,7 @@ Sources for the images we got online:
     https://ixquick-proxy.com/do/spg/show_picture.pl?l=english&rais=1&oiu=http%3A%2F%2Fimages.clipartpanda.com%2Fcloud-clipart-white-cloud-clipart.jpeg&sp=f548a6821d354fe27c3ccc8e502399b6
     Windy Cloud:
     https://ixquick-proxy.com/do/spg/show_picture.pl?l=english&rais=1&oiu=http%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2FniX%2Fo4x%2FniXo4xzxT.gif&sp=fb91dba604a409547d35ef5bcec16728
-    
+
 
 
 

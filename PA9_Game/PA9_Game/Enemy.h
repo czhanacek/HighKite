@@ -127,7 +127,7 @@ public:
 
     void receiveMessage(Message msg)
     {
-        if(msg.getSender() == getName() && msg.getContent() == "collided," + signature)
+        if(msg.getSender() == getName() && msg.getContent() == ("collided," + signature))
         {
             setColor(sf::Color(255,0,0,200));
             move(0,25);
@@ -165,6 +165,7 @@ public:
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/eagle.png");
 		addNewTexture("imgs/eagle-flipped.png");
+		addNewSound("sounds/hawkscream.ogg");
 		setCurrentTexture(0);
 		setMovementSpeedDown(5);
 		setMovementSpeedHorizontal(5);
@@ -236,6 +237,7 @@ public:
 	{
 		// use addNewTexture() to add texture to this enemy and add to texture vector
 		addNewTexture("imgs/seagull.png");
+		addNewSound("sounds/hawkscream.ogg");
 		addNewTexture("imgs/seagull-flipped.png");
 		setCurrentTexture(0);
 		setMovementSpeedDown(7);

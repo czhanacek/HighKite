@@ -117,11 +117,11 @@ GameWrapper::GameWrapper() {
             registerReactableSprite(lef);
         }
 
-        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < 16) {
+        if(elapsed2.getElapsedTime().asMilliseconds() >= 2000  && getCurrentContext() == "game" && animates.size() < (randModifier * 2 + 10)) {
             spawnRandomEnemy();
         }
 
-        if (elapsed3.getElapsedTime().asSeconds() > 40 && randModifier <= 9) {
+        if (elapsed3.getElapsedTime().asSeconds() > 15 && randModifier <= 9) {
             randModifier++;
 			elapsed3.restart();
 		}
@@ -450,7 +450,7 @@ void GameWrapper::messageBlaster(void) {
 void GameWrapper::addMessageToQueue(Message msg) {
 
     if(!msg.isEmpty()) {
-        //std::cout << "New message from " << msg.getSender() << ": " << msg.getContent() << std::endl;
+        std::cout << "New message from " << msg.getSender() << ": " << msg.getContent() << std::endl;
         messageQueue.push(msg);
     }
 }
@@ -572,18 +572,25 @@ void GameWrapper::cleanUpSpritesFarOffScreen(void) {
     for(int i = 0; i < animates.size();) {
         if(animates[i]->getPosition().y > 2000 || animates[i]->getPosition().x > 2100 || animates[i]->getPosition().x < -2100 || animates[i]->getPosition().y < -1400) {
             bool foundMatch = false;
+            if(animates[i]->getName() == "Boy") {
+                std::cout << "Help!\n";
+            }
             for(int x = 0; x < reacts.size(); x++) {
                 if(animates[i] == reacts[x]) {
+                    std::cout << "Cleaning up " << animates[i]->getName() << std::endl;
+                    std::cout << "at position (" << animates[i]->getPosition().x << ", " << animates[i]->getPosition().y << ") and index " << i << "\n";
                     delete animates[i];
                     foundMatch = true;
                     animates.erase(animates.begin() + i);
                     reacts.erase(reacts.begin() + x);
+                    i = 0;
+                    x = 0;
                 }
             }
             if(!foundMatch) {
                 delete animates[i];
                 animates.erase(animates.begin() + i);
-
+                i = 0;
             }
         }
         else {

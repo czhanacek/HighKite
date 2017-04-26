@@ -140,6 +140,11 @@ void DigitThree::receiveMessage(Message msg)
 	{
 		std::string strCurrentScore = msg.getContent();
 		int intCurrentScore = atoi(strCurrentScore.c_str());
+		std::cout << "Score: " << intCurrentScore << std::endl;
+		if(intCurrentScore >= 53 ) {
+            std::cout << "Hello\n";
+
+		}
 		for (int i = 1; i < 3; ++i)
 		{
 			intCurrentScore = intCurrentScore - (intCurrentScore % 10);

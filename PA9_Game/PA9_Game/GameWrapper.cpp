@@ -383,7 +383,6 @@ void GameWrapper::makeMainMenuBackground(void) {
     Button * play = new Button("playGame", getCurrentContext(), "imgs/button-play.png", "imgs/button-play-pressed.png", 200, 100);
     Cloud * windcloud = new Cloud("cloud", getCurrentContext());
     KiteObj * menuKite = new KiteObj();
-    menuKite->setPosition(750, 105);
     sortAnimatorsByPriority();
 
     registerAnimatableSprite(windcloud);

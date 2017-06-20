@@ -485,6 +485,7 @@ void GameWrapper::forceRemoveAllSprites(void) {
 
 
 void GameWrapper::makeMainMenuBackground(void) {
+    randModifier = 3;
     std::cout << "Making main menu\n";
     forceRemoveAllSprites();
     //removeSpritesBelongingToContext("game");
